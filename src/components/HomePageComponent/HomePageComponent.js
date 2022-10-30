@@ -37,7 +37,7 @@ function HomePageComponent() {
                         <div className="container-fluid" >
                             <div className="col-sm-12" >
                                 <div className="row" >
-                                    <li className="text-center" style={{ backgroundImage: y, width: "3000px", height: "500px", filter: "brightness(50%)" }} >
+                                    <li className="text-center" style={{ backgroundImage: `url(${background_2})`, width: "3000px", height: "500px", filter: "brightness(50%)" }} >
                                         {/* <img src="assets/images/banner-01.jpg" alt="" /> */}
                                         <div className="container">
                                             <div className="row">

@@ -98,7 +98,7 @@ function HeaderComponent() {
                                 <li className="dropdown">
                                     <a href="/shop" className="nav-link" data-toggle="dropdown">SHOP</a>
                                     <ul className="dropdown-menu">
-                                        <li><a href="/">Sidebar Shop</a></li>
+                                        <li><a href="/product-list">Product List</a></li>
                                         <li><a href="/shop-detail">Shop Detail</a></li>
                                         <li><a href="/cart">Cart</a></li>
                                         <li><a href="/checkout">Checkout</a></li>
@@ -106,7 +106,6 @@ function HeaderComponent() {
                                         <li><a href="/wishlist">Wishlist</a></li>
                                     </ul>
                                 </li>
-                                <li className="nav-item"><a className="nav-link" href="/gallery">Gallery</a></li>
                                 <li className="nav-item"><a className="nav-link" href="/contact">Contact Us</a></li>
                             </ul>
                         </div>

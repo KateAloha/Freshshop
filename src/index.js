@@ -10,12 +10,14 @@ import thunk from 'redux-thunk';
 import LoginReducer from "./reducers/LoginReducer"
 import ProductListReducer from "./reducers/ProductListReducer"
 import FilterReducer from './reducers/FilterReducer';
+import ProductDetailReducer from "./reducers/ProductDetailReducer"
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const rootReducer = combineReducers({
   LoginReducer,
   ProductListReducer,
   FilterReducer,
+  ProductDetailReducer
 })
 const store = createStore(rootReducer, applyMiddleware(thunk))
 root.render(

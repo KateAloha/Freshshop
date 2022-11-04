@@ -4,10 +4,12 @@ import { ChangeNoPage, FilterAction, getAllListData } from "../../actions/Produc
 import { Grid, Pagination, TextField, Box, Typography, List, ListItem, Checkbox } from "@mui/material";
 import HeaderComponent from "../HeaderComponent/HeaderComponent"
 import { FilterCategoriesAction, FilterMaxPriceAction, FilterMinPriceAction, FilterNameAction } from "../../actions/FilterAction";
+import { useNavigate } from "react-router-dom";
 
 function ProductList() {
 
     const dispatch = useDispatch()
+    const navigate = useNavigate()
     const [filter, setFilter] = useState(false)
     const { filterMaxPrice, filterMinPrice, filterName, filterCategories } = useSelector((reduxData) => reduxData.FilterReducer)
     const { products, productsFilter, currentPage, numPage } = useSelector((reduxData) => reduxData.ProductListReducer)
@@ -52,7 +54,7 @@ function ProductList() {
 
     const onNameFilter = (event) => {
         console.log(event.target.value)
-        dispatch(FilterNameAction((event.target.value).toLowerCase()))
+        dispatch(FilterNameAction((event.target.value).toUpperCase()))
     }
 
     const onMinPriceFilter = (value) => {
@@ -68,6 +70,10 @@ function ProductList() {
     const onFilterClick = () => {
         dispatch(FilterAction(filterMaxPrice, filterMinPrice, filterName, filterCategories))
         setFilter(true)
+    }
+
+    const onDetailClick = (productDetail) => {
+        navigate(`/shop-detail/${productDetail._id}`)
     }
     return (
         <>
@@ -127,7 +133,7 @@ function ProductList() {
                                             return (
                                                 <>
                                                     <input type="checkbox" id={`From ${value}`} name={`From ${value}`} value={Number(value)} onChange={() => onMaxPriceFilter(value)}/>
-                                                    <label for={`From ${value}`}>Under {value} VND</label><br />
+                                                    <label for={`From ${value}`}>Under or equal to {value} VND</label><br />
                                                 </>
                                             )
                                         })}
@@ -175,7 +181,7 @@ function ProductList() {
                                                             <img src={product.imageURl} className="img-fluid" alt="Image" />
                                                             <div className="mask-icon">
                                                                 <ul>
-                                                                    <li><a href="#" data-toggle="tooltip" data-placement="right" title="View"><i className="fas fa-eye"></i></a></li>
+                                                                    <li><a href="#" data-toggle="tooltip" data-placement="right" title="View" onClick={() => onDetailClick(product)}><i className="fas fa-eye"></i></a></li>
                                                                     <li><a href="#" data-toggle="tooltip" data-placement="right" title="Compare"><i className="fas fa-sync-alt"></i></a></li>
                                                                     <li><a href="#" data-toggle="tooltip" data-placement="right" title="Add to Wishlist"><i className="far fa-heart"></i></a></li>
                                                                 </ul>
@@ -199,7 +205,7 @@ function ProductList() {
                                                             <img src={productFilter.imageURl} className="img-fluid" alt="Image" />
                                                             <div className="mask-icon">
                                                                 <ul>
-                                                                    <li><a href="#" data-toggle="tooltip" data-placement="right" title="View"><i className="fas fa-eye"></i></a></li>
+                                                                    <li><a href="#" data-toggle="tooltip" data-placement="right" title="View" ><i className="fas fa-eye"></i></a></li>
                                                                     <li><a href="#" data-toggle="tooltip" data-placement="right" title="Compare"><i className="fas fa-sync-alt"></i></a></li>
                                                                     <li><a href="#" data-toggle="tooltip" data-placement="right" title="Add to Wishlist"><i className="far fa-heart"></i></a></li>
                                                                 </ul>

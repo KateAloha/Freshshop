@@ -9,9 +9,7 @@ import HeaderComponent from "./components/HeaderComponent/HeaderComponent";
 import HomePageComponent from './components/HomePageComponent/HomePageComponent';
 import LoginForm from "./components/LoginForm/LoginForm";
 import MyAccountComponent from "./components/MyAccountComponent/MyAccountComponent";
-import ShopComponent from "./components/ShopComponent/ShopComponent";
 import ShopDetailComponent from "./components/ShopDetailComponent/ShopDetailComponent";
-import WishlistComponent from "./components/WishlistComponent/WishlistComponent";
 import ProductList from "./components/ProductListComponent/ProductListComponent.js";
 
 function App() {
@@ -25,9 +23,7 @@ function App() {
         <Route exact path="/contact" element={<ContactComponent></ContactComponent>}></Route>
         <Route exact path="/gallery" element={<GalleryComponent></GalleryComponent>}></Route>
         <Route exact path="/my-account" element={<MyAccountComponent></MyAccountComponent>}></Route>
-        <Route exact path="/shop" element={<ShopComponent></ShopComponent>}></Route>
-        <Route exact path="/shop-detail" element={<ShopDetailComponent></ShopDetailComponent>}></Route>
-        <Route exact path="/wishlist" element={<WishlistComponent></WishlistComponent>}></Route>
+        <Route exact path="/shop-detail/:paramId" element={<ShopDetailComponent></ShopDetailComponent>}></Route>
         <Route exact path="/product-list" element={<ProductList></ProductList>}></Route>
         <Route path="*" element={<HomePageComponent></HomePageComponent>}></Route>
         <Route exact path="/login" element={<LoginForm></LoginForm>}></Route>

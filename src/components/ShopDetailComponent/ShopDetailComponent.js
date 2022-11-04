@@ -1,6 +1,29 @@
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
+import { ProductDetailAction } from "../../actions/ProductDetailAction";
 import HeaderComponent from "../HeaderComponent/HeaderComponent";
+import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 function ShopDetailComponent() {
+    const dispatch = useDispatch()
+    const { paramId } = useParams()
+
+    const [quantity, setQuantity] = useState(1)
+    const { product } = useSelector((reduxData) => reduxData.ProductDetailReducer)
+
+    useEffect(() => {
+        dispatch(ProductDetailAction(paramId))
+    }, [paramId])
+
+    const onPLusClick = () => {
+        setQuantity(quantity + 1)
+    }
+
+    const onMinusClick = () => {
+        setQuantity(quantity - 1)
+    }
     return (
         <>
             <HeaderComponent></HeaderComponent>
@@ -29,69 +52,36 @@ function ShopDetailComponent() {
                         <div className="col-xl-5 col-lg-5 col-md-6">
                             <div id="carousel-example-1" className="single-product-slider carousel slide" data-ride="carousel">
                                 <div className="carousel-inner" role="listbox">
-                                    <div className="carousel-item active"> <img className="d-block w-100" src="assets/images/big-img-01.jpg" alt="First slide"/> </div>
-                                    <div className="carousel-item"> <img className="d-block w-100" src="assets/images/big-img-02.jpg" alt="Second slide" /> </div>
-                                    <div className="carousel-item"> <img className="d-block w-100" src="assets/images/big-img-03.jpg" alt="Third slide" /> </div>
+                                    <div className="carousel-item active"> <img className="d-block w-100" src={product.imageURl} alt="First slide" /> </div>                                   
                                 </div>
-                                <a className="carousel-control-prev" href="#carousel-example-1" role="button" data-slide="prev">
-                                    <i className="fa fa-angle-left" aria-hidden="true"></i>
-                                    <span className="sr-only">Previous</span>
-                                </a>
-                                <a className="carousel-control-next" href="#carousel-example-1" role="button" data-slide="next">
-                                    <i className="fa fa-angle-right" aria-hidden="true"></i>
-                                    <span className="sr-only">Next</span>
-                                </a>
-
-                                <ol className="carousel-indicators">
-                                    <li data-target="#carousel-example-1" data-slide-to="0" className="active">
-                                        <img className="d-block w-100 img-fluid" src="assets/images/smp-img-01.jpg" alt="" />
-                                    </li>
-                                    <li data-target="#carousel-example-1" data-slide-to="1">
-                                        <img className="d-block w-100 img-fluid" src="assets/images/smp-img-02.jpg" alt="" />
-                                    </li>
-                                    <li data-target="#carousel-example-1" data-slide-to="2">
-                                        <img className="d-block w-100 img-fluid" src="assets/images/smp-img-03.jpg" alt="" />
-                                    </li>
-                                </ol>
-
-
                             </div>
                         </div>
                         <div className="col-xl-7 col-lg-7 col-md-6">
                             <div className="single-product-details">
-                                <h2>Fachion Lorem ipsum dolor sit amet</h2>
-                                <h5> <del>$ 60.00</del> $40.79</h5>
+                                <h2>{product.name} | {product.description}</h2>
+                                <h5> <del>VND {product.buyPrice}</del> VND {product.promotionPrice}</h5>
                                 <p className="available-stock"><span> More than 20 available / <a href="#">8 sold </a></span></p>
                                 <h4>Short Description:</h4>
-                                <p>Nam sagittis a augue eget scelerisque. Nullam lacinia consectetur sagittis. Nam sed neque id eros fermentum dignissim quis at tortor. Nullam ultricies urna quis sem sagittis pharetra. Nam erat turpis, cursus in ipsum at,
-                                    tempor imperdiet metus. In interdum id nulla tristique accumsan. Ut semper in quam nec pretium. Donec egestas finibus suscipit. Curabitur tincidunt convallis arcu. </p>
-                                <ul>
-                                    <li>
-                                        <div className="form-group quantity-box">
-                                            <label className="control-label">Quantity</label>
-                                            <input className="form-control" value="0" min="0" max="20" type="number" />
-                                        </div>
-                                    </li>
-                                </ul>
-
-                                <div className="price-box-bar">
-                                    <div className="cart-and-bay-btn">
-                                        <a className="btn hvr-hover" data-fancybox-close="" href="#" style={{ backgroundColor: "#b0b435" }}>Buy New</a>
-                                        <a className="btn hvr-hover" data-fancybox-close="" href="#" style={{ backgroundColor: "#b0b435" }}>Add to cart</a>
+                                <p>{product.description} | <span style={{ fontStyle: "italic" }}>One of the Best quality Products that were imported</span></p>
+                                <div className="row mt-5" style={{marginBottom: "50px"}}>
+                                    <div className="col-sm-2">
+                                        <h4 style={{ marginTop: "9px" }}>Quantity </h4>
+                                    </div>
+                                    <div className="col-sm-1">
+                                        <RemoveCircleIcon style={{ marginTop: "10px" }} onClick={onMinusClick}></RemoveCircleIcon>
+                                    </div>
+                                    <div className="col-sm-1">
+                                        <h4 style={{ marginTop: "9px" }}>{quantity}</h4>
+                                    </div>
+                                    <div className="col-sm-1">
+                                        <AddCircleIcon style={{ marginTop: "10px" }} onClick={onPLusClick}></AddCircleIcon>
                                     </div>
                                 </div>
 
-                                <div className="add-to-btn">
-                                    <div className="add-comp">
-                                        <a className="btn hvr-hover" href="#" style={{ backgroundColor: "#b0b435" }}><i className="fas fa-heart" ></i> Add to wishlist</a>
-                                        <a className="btn hvr-hover" href="#" style={{ backgroundColor: "#b0b435" }}><i className="fas fa-sync-alt"></i> Add to Compare</a>
-                                    </div>
-                                    <div className="share-bar">
-                                        <a className="btn hvr-hover" href="#"><i className="fab fa-facebook" aria-hidden="true"></i></a>
-                                        <a className="btn hvr-hover" href="#"><i className="fab fa-google-plus" aria-hidden="true"></i></a>
-                                        <a className="btn hvr-hover" href="#"><i className="fab fa-twitter" aria-hidden="true"></i></a>
-                                        <a className="btn hvr-hover" href="#"><i className="fab fa-pinterest-p" aria-hidden="true"></i></a>
-                                        <a className="btn hvr-hover" href="#"><i className="fab fa-whatsapp" aria-hidden="true"></i></a>
+                                <div className="price-box-bar">
+                                    <div className="cart-and-bay-btn">
+                                        <a className="btn hvr-hover" data-fancybox-close="" href="#" style={{ backgroundColor: "#b0b435", marginRight: "10px" }}>Buy New</a>
+                                        <a className="btn hvr-hover" data-fancybox-close="" href="#" style={{ backgroundColor: "#b0b435" }}>Add to cart</a>
                                     </div>
                                 </div>
                             </div>

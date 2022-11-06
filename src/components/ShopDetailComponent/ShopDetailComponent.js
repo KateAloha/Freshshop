@@ -481,4 +481,27 @@ function ShopDetailComponent() {
     )
 }
 
+<div className="col-lg-6">
+                                <div style={{ position: "relative" }}>
+                                    <img className="img-fluid" src={login} alt="" style={{ filter: "brightness(50%)" }} />
+                                    {/* style={{height: "500px"}} */}
+                                    <div className="hover text-center" style={{ position: "absolute", top: "200px", left: "20px", right: "100px", fontSize: "20px" }}>
+                                        <h2 style={{ fontWeight: "bold", color: "white" }}>New to our website?</h2>
+                                        <p className="my-5" style={{ color: "white" }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce enim nulla, mollis eu metus in, sagittis fringilla tortor. Phasellus purus dignissim convallis.</p>
+                                        {" "}
+                                        {
+                                            user ?
+                                                <>
+                                                    <h4 style={{ color: "white" }}>Hi, {user.displayName}</h4>
+                                                    <img src={user.photoURL} style={{ width: "50px", borderRadius: "50%" }} alt="user-avatar"></img>
+                                                    <br></br>
+                                                    <button className="btn btn-danger mt-1" ><a href="/login" style={{ color: "white" }}>Sign out</a></button>
+                                                </>
+                                                :
+                                                <button className="btn btn-danger " onClick={loginGoogle}><a href="/login" style={{ color: "white" }}>Sign in with Google</a></button>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+
 export default ShopDetailComponent;

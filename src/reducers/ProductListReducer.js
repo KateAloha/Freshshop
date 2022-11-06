@@ -8,10 +8,9 @@ const initialState = {
     products: [],
     productsFilter: [],
     currentPage: 1,
-    numPage: 0
+    limitProduct: 12
 }
 
-const limitProduct = 12;
 
 
 const ProductListReducer = (state = initialState, action) => {
@@ -19,19 +18,20 @@ const ProductListReducer = (state = initialState, action) => {
         case GET_DATA_PRODUCT:
             return {
                 ...state,
-                products: action.payload.slice((state.currentPage - 1) * limitProduct, state.currentPage * limitProduct),
-                numPage: Math.ceil(action.payload.length / limitProduct)
+                products: action.payload,
+                // numPage: Math.ceil(action.payload.length / limitProduct)
             }
         case PAGINATION:
             return {
                 ...state,
-                currentPage: action.payload
+                currentPage: action.payload,
+                // numPage: Math.ceil(action.payload.length / limitProduct)
             }
         case FILTER_PRODUCT:
             return {
                 ...state,
-                productsFilter: action.payload.slice((state.currentPage - 1) * limitProduct, state.currentPage * limitProduct),
-                numPage: Math.ceil(action.payload.length / limitProduct)
+                productsFilter: action.payload,
+                // numPage: Math.ceil(action.payload.length / limitProduct)
             }
         default:
             return state;

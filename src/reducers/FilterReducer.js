@@ -2,7 +2,7 @@ import { FILTER_NAME, FILTER_MAX_PRICE, FILTER_MIN_PRICE, FILTER_CATEGORIES} fro
 
 
 const initialState = {
-    filterMaxPrice: 10000000,
+    filterMaxPrice: 1000000000,
     filterMinPrice: 0,
     filterName: "",
     filterCategories: "",

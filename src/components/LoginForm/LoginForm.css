@@ -1,0 +1,76 @@
+.largeBackGround {
+    width: 500px;
+    height: 550px;
+    background-color: lightgrey;
+    text-align: center;
+    margin: auto;
+    margin-top: 30px;
+    padding: 20px;
+}
+
+.smallBackGround {
+    width: 450px;
+    height: 450px;
+    background-color: #212F3D;
+    text-align: center;
+    padding: 30px
+}
+
+.largeBackGroundSignUp {
+    width: 500px;
+    height: 750px;
+    background-color: lightgrey;
+    text-align: center;
+    margin: auto;
+    margin-top: 30px;
+    padding: 20px;
+}
+
+.smallBackGroundSignUp {
+    width: 450px;
+    height: 700px;
+    background-color: #212F3D;
+    text-align: center;
+    padding: 30px
+}
+
+.signUpButton {
+    width: 180px;
+    color: grey;
+    background-color: #424949;
+}
+
+.loginButton {
+    width: 180px;
+    color: white;
+    background-color: #48C9B0;
+}
+
+.textWelcome {
+    color: white;
+    padding: 30px;
+}
+
+.input {
+    background-color: #212F3D;
+    margin-bottom: 30px;
+}
+
+.textForgotPassword {
+    color: #48c9b0;
+
+}
+
+.loginButtonLarge {
+    width: 410px;
+    color: white;
+    background-color: #48C9B0;
+}
+
+.loginGoogleButton {
+    margin-top: 10px;
+    width: 410px;
+    color: white;
+    background-color: red;
+}
+

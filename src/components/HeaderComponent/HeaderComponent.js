@@ -1,13 +1,14 @@
 import { GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
 import auth from "../../firebase";
+import LogoutIcon from '@mui/icons-material/Logout';
 
 //import react
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { GoogleLogin } from "../../actions/LoginAction";
+import { GoogleLogin } from "../../actions/CustomerAction";
 
 function HeaderComponent() {
-    const dispatch= useDispatch()
+    const dispatch = useDispatch()
     const { user } = useSelector((reduxData) => reduxData.LoginReducer)
     useEffect(() => {
         onAuthStateChanged(auth, (result) => {
@@ -18,6 +19,7 @@ function HeaderComponent() {
             }
         })
     }, [])
+
 
     const logoutGoogle = () => {
         signOut(auth)
@@ -43,13 +45,16 @@ function HeaderComponent() {
                                     <option>€ EUR</option>
                                 </select>
                             </div>
-                            <div className="right-phone-box">
-                                <p>Call US :- <a href="#"> +11 900 800 100</a></p>
-                            </div>
                             <div className="our-link">
                                 <ul>
                                     {user ?
-                                        <li><img src={user.photoURL} style={{ width: "20px", borderRadius: "50%" }} alt="user-avatar"></img><a href="/login" onClick={logoutGoogle}> Sign Out</a></li>
+                                        <>
+                                            <li>
+                                                <img src={user.photoURL} style={{ width: "20px", borderRadius: "50%" }} alt="user-avatar"></img>
+                                                <a href="/my-account"> MY ACCOUNT</a>
+                                            </li>
+                                            <li><a href="/login" onClick={logoutGoogle}> LOG OUT</a></li>
+                                        </>
                                         :
                                         <li><a href="/login"><i className="fa fa-user s_color"></i> Login</a></li>
                                     }

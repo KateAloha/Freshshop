@@ -1,11 +1,14 @@
 import login from "../../assets/images/login.jpg";
+import { Button, Col, Row, Input } from "reactstrap"
+import { Grid } from "@mui/material";
+import "./LoginForm.css"
 import { GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
 import auth from "../../firebase";
 
 //import react
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { GoogleLogin } from "../../actions/LoginAction";
+import { GoogleLogin } from "../../actions/CustomerAction";
 import HeaderComponent from "../HeaderComponent/HeaderComponent";
 const provider = new GoogleAuthProvider();
 
@@ -14,6 +17,7 @@ function LoginForm() {
 
     const dispatch = useDispatch();
     const { user } = useSelector((reduxData) => reduxData.LoginReducer)
+    const [login, setLogin] = useState(true)
     console.log(user)
 
     const loginGoogle = () => {
@@ -37,68 +41,95 @@ function LoginForm() {
             })
     }
 
-    // useEffect(() => {
-    //     onAuthStateChanged(auth, (result) => {
-    //         if (result) {
-    //             dispatch(GoogleLogin(result));
-    //         } else {
-    //             dispatch(GoogleLogin(null));
-    //         }
-    //     })
-    // }, [])
+    const onBtnSignUp = () => {
+        setLogin(false)
+    }
+
+    const onBtnLogin = () => {
+        setLogin(true)
+    }
 
     return (
         <>
             <HeaderComponent></HeaderComponent>
 
-            <div className="container" style={{ margin: "80px" }}>
+            <div className="container" >
                 <section className="login_box_area section_gap">
                     <div className="container">
                         <div className="row">
 
-                            <div className="col-lg-6">
-                                <div style={{ position: "relative" }}>
-                                    <img className="img-fluid" src={login} alt="" style={{ filter: "brightness(50%)" }} />
-                                    {/* style={{height: "500px"}} */}
-                                    <div className="hover text-center" style={{ position: "absolute", top: "200px", left: "20px", right: "100px", fontSize: "20px" }}>
-                                        <h2 style={{ fontWeight: "bold", color: "white" }}>New to our website?</h2>
-                                        <p className="my-5" style={{ color: "white" }}>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce enim nulla, mollis eu metus in, sagittis fringilla tortor. Phasellus purus dignissim convallis.</p>
-                                        {" "}
-                                        {
-                                            user ?
-                                                <>
-                                                    <h4 style={{ color: "white" }}>Hi, {user.displayName}</h4>
-                                                    <img src={user.photoURL} style={{ width: "50px", borderRadius: "50%" }} alt="user-avatar"></img>
-                                                    <br></br>
-                                                    <button className="btn btn-danger mt-1" onClick={logoutGoogle}><a href="/login" style={{ color: "white" }}>Sign out</a></button>
-                                                </>
-                                                :
-                                                <button className="btn btn-danger " onClick={loginGoogle}><a href="/login" style={{ color: "white" }}>Sign in with Google</a></button>
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-lg-6 text-center">
-                                <div style={{ marginTop: "150px" }}>
-                                    <h3>Log in to enter</h3>
-                                    <form className="row login_form" id="contactForm">
-                                        <div className="col-md-12 form-group">
-                                            <input type="text" className="form-control" name="name" placeholder="Username" />
-                                        </div>
-                                        <div className="col-md-12 form-group">
-                                            <input type="password" className="form-control" name="name" placeholder="Password" />
-                                        </div>
-                                        <div className="col-md-12 form-group">
-                                            <div className="creat_account">
-                                                <input type="checkbox" id="f-option2" name="selector" />
-                                                <label htmlFor="f-option2">Keep me logged in</label>
+                            <div className="col-lg-12 text-center">
+                                <div style={{ marginBottom: "150px" }}>
+                                    {
+                                        login ?
+                                            <div className="largeBackGround">
+                                                <div className="smallBackGround">
+                                                    <Row>
+                                                        <Col>
+                                                            <Button className="signUpButton" onClick={onBtnSignUp}>Sign Up</Button>
+                                                            <Button className="loginButton">Log In</Button>
+                                                        </Col>
+                                                    </Row>
+                                                    <Row>
+                                                        <h2 className="textWelcome">Welcome Back!</h2>
+                                                    </Row>
+                                                    <Row>
+                                                        <Input placeholder="Email Address*" className="input" ></Input>
+                                                    </Row>
+                                                    <Row>
+                                                        <Input placeholder="Passwords*" className="input" ></Input>
+                                                    </Row>
+                                                    <Row>
+                                                        <p className="textForgotPassword">Forgot Passwords</p>
+                                                    </Row>
+                                                    <Row>
+                                                        <Button className="loginButtonLarge" >Log In</Button>
+                                                    </Row>
+                                                    <Row>
+                                                        <Button className="loginGoogleButton" onClick={loginGoogle}>Log In Google</Button>
+                                                    </Row>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div className="col-md-12 form-group">
-                                            <button className="btn essence-btn">Log In</button>
-                                            <a href="/login">Forgot Password?</a>
-                                        </div>
-                                    </form>
+                                            :
+                                            <div className="largeBackGroundSignUp">
+                                                <div className="smallBackGroundSignUp">
+                                                    <Row>
+                                                        <Col>
+                                                            <Button className="loginButton" >Sign Up</Button>
+                                                            <Button className="signUpButton" onClick={onBtnLogin}>Log In</Button>
+                                                        </Col>
+                                                    </Row>
+                                                    <Row>
+                                                        <h2 className="textWelcome">Sign Up For Free</h2>
+                                                    </Row>
+                                                    <Row>
+                                                        <Input placeholder="Full Name*" className="input" ></Input>
+                                                    </Row>
+                                                    <Row>
+                                                        <Input placeholder="Phone Number*" className="input" ></Input>
+                                                    </Row>
+                                                    <Row>
+                                                        <Input placeholder="Email Address*" className="input" ></Input>
+                                                    </Row>
+                                                    <Row>
+                                                        <Input placeholder="Address*" className="input" ></Input>
+                                                    </Row>
+                                                    <Row>
+                                                        <Input placeholder="City*" className="input" ></Input>
+                                                    </Row>
+                                                    <Row>
+                                                        <Input placeholder="Country*" className="input" ></Input>
+                                                    </Row>
+                                                    <Row>
+                                                        <Input placeholder="Set A Password*" className="input" ></Input>
+                                                    </Row>
+                                                    <Row>
+                                                        <Button className="loginButtonLarge" >Get Started</Button>
+                                                    </Row>
+                                                </div>
+                                            </div>
+                                    }
+
                                 </div>
                             </div>
                         </div>

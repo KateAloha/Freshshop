@@ -29,14 +29,14 @@ export const FilterAction = (filterMaxPrice, filterMinPrice, filterName , filter
         redirect: 'follow'
     }
     try {
-        if (filterMaxPrice === 100000000 && filterMinPrice === 0 && filterName === "" && filterCategories === "") {
+        if (filterMaxPrice === 1000000000 && filterMinPrice === 0 && filterName === "" && filterCategories === "") {
             const response = await fetch(`http://localhost:8000/productRouters`, requestOptions);
             const data = await response.json();
             return dispatch({
                 type: GET_DATA_PRODUCT,
                 payload: data.productList
             });
-        } else if (filterMaxPrice !== 10000000 || filterMinPrice !== 0 || filterName !== "" || filterCategories !== "") {
+        } else if (filterMaxPrice !== 1000000000 || filterMinPrice !== 0 || filterName !== "" || filterCategories !== "") {
             const response = await fetch(`http://localhost:8000/productRouters/?filterMaxPrice=${filterMaxPrice}&filterMinPrice=${filterMinPrice}&filterName=${filterName}&filterCategories=${filterCategories}`, requestOptions);
             const data = await response.json();
             return dispatch({

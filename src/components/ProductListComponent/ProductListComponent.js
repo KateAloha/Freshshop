@@ -12,13 +12,17 @@ function ProductList() {
     const navigate = useNavigate()
     const [filter, setFilter] = useState(false)
     const { filterMaxPrice, filterMinPrice, filterName, filterCategories } = useSelector((reduxData) => reduxData.FilterReducer)
-    const { products, productsFilter, currentPage, numPage } = useSelector((reduxData) => reduxData.ProductListReducer)
+    const { products, productsFilter, currentPage, limitProduct } = useSelector((reduxData) => reduxData.ProductListReducer)
 
     const price = [20000, 40000, 60000, 80000];
+    const productPagination = products.slice((currentPage - 1) * limitProduct, currentPage * limitProduct);
+    const productFilterPagination = productsFilter.slice((currentPage - 1) * limitProduct, currentPage * limitProduct)
+    const numPagePagination = Math.ceil(products.length / limitProduct)
+    const numPageFilterPagination = Math.ceil(productsFilter.length / limitProduct)
 
     useEffect(() => {
         dispatch(getAllListData())
-    }, [currentPage])
+    }, [currentPage, filter])
 
     const handlePageChange = (event, value) => {
         dispatch(ChangeNoPage(value));
@@ -117,7 +121,7 @@ function ProductList() {
                                         {price.map((value, index) => {
                                             return (
                                                 <>
-                                                    <input type="checkbox" id={`From ${value}`} name={`From ${value}`} value={Number(value)} onChange={() => onMinPriceFilter(value)}/>
+                                                    <input type="checkbox" id={`From ${value}`} name={`From ${value}`} value={Number(value)} onChange={() => onMinPriceFilter(value)} />
                                                     <label for={`From ${value}`}>From {value} VND</label><br />
                                                 </>
                                             )
@@ -132,7 +136,7 @@ function ProductList() {
                                         {price.map((value, index) => {
                                             return (
                                                 <>
-                                                    <input type="checkbox" id={`From ${value}`} name={`From ${value}`} value={Number(value)} onChange={() => onMaxPriceFilter(value)}/>
+                                                    <input type="checkbox" id={`From ${value}`} name={`From ${value}`} value={Number(value)} onChange={() => onMaxPriceFilter(value)} />
                                                     <label for={`From ${value}`}>Under or equal to {value} VND</label><br />
                                                 </>
                                             )
@@ -170,7 +174,8 @@ function ProductList() {
                             <div className="row special-list">
                                 {
                                     !filter ?
-                                        products.map((product, index) => {
+                                    
+                                        productPagination.map((product, index) => {
                                             return (
                                                 <div className="col-lg-4 col-md-6 special-grid bulbs">
                                                     <div className="products-single fix">
@@ -188,13 +193,13 @@ function ProductList() {
                                                                 <a className="cart" href="#">Add to Cart</a>
                                                             </div>
                                                         </div>
-                                                        <div style={{ backgroundColor: "#b0b435", borderRadius: "10px", height: "30px", width: "200px", marginTop: "10px", color: "white", fontWeight: "bold" }} className="text-center">{product.name} : {product.buyPrice}/kg</div>
+                                                        <div style={{ backgroundColor: "#b0b435", borderRadius: "10px", height: "30px", width: "300px", marginTop: "10px", color: "white", fontWeight: "bold" }} className="text-center">{product.name} : {product.buyPrice}/kg</div>
                                                     </div>
                                                 </div>
                                             )
                                         })
                                         :
-                                        productsFilter.map((productFilter, index) => {
+                                        productFilterPagination.map((productFilter, index) => {
                                             return (
                                                 <div className="col-lg-4 col-md-6 special-grid bulbs">
                                                     <div className="products-single fix">
@@ -212,7 +217,7 @@ function ProductList() {
                                                                 <a className="cart" href="#">Add to Cart</a>
                                                             </div>
                                                         </div>
-                                                        <div style={{ backgroundColor: "#b0b435", borderRadius: "10px", height: "30px", width: "200px", marginTop: "10px", color: "white", fontWeight: "bold" }} className="text-center">{productFilter.name} : ${productFilter.buyPrice}</div>
+                                                        <div style={{ backgroundColor: "#b0b435", borderRadius: "10px", height: "30px", width: "300px", marginTop: "10px", color: "white", fontWeight: "bold" }} className="text-center">{productFilter.name} : {productFilter.buyPrice}/kg</div>
                                                     </div>
                                                 </div>
                                             )
@@ -221,7 +226,7 @@ function ProductList() {
                             </div>
                         </div>
                         <Grid container justifyContent='end' className="mt-3 mb-4">
-                            <Pagination count={numPage} defaultPage={currentPage} onChange={handlePageChange} />
+                            <Pagination count={!filter? numPagePagination : numPageFilterPagination} defaultPage={currentPage} onChange={handlePageChange} />
                         </Grid>
                     </div>
                 </div>

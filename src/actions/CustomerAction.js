@@ -1,4 +1,4 @@
-import {LOGIN_GOOGLE, USER_NAME, USER_PASSWORD} from '../constants/LoginType'
+import {LOGIN_GOOGLE, USER_NAME, USER_PASSWORD} from '../constants/CustomerType'
 
 export const GoogleLogin = (value) => {
     return {

@@ -8,7 +8,7 @@ import auth from "../../firebase";
 //import react
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { GoogleLogin } from "../../actions/CustomerAction";
+import { createNewCus, GoogleLogin } from "../../actions/CustomerAction";
 import HeaderComponent from "../HeaderComponent/HeaderComponent";
 const provider = new GoogleAuthProvider();
 
@@ -16,9 +16,36 @@ const provider = new GoogleAuthProvider();
 function LoginForm() {
 
     const dispatch = useDispatch();
-    const { user } = useSelector((reduxData) => reduxData.LoginReducer)
+    const { userGoogle } = useSelector((reduxData) => reduxData.CustomerReducer)
     const [login, setLogin] = useState(true)
-    console.log(user)
+    console.log(userGoogle)
+
+    const body = {
+        method: "POST",
+        body: JSON.stringify({
+            fullName: "Hehe Bao",
+            phone: "13456789123",
+            email: "khuyentrinh012223@gmail.com",
+            address: "efghnm",
+            city: "zxcv",
+            country: "zxcv ",
+            password: "Khuyen@20000",
+            orders: [],
+        }),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      };
+    
+    const getData = async ( url, body) => {
+        let response = await fetch(url, body)
+        let data = await response.json()
+        return data
+    }
+
+    useEffect(() => {
+        dispatch(getData("http://localhost:8000/customers",body))
+    })
 
     const loginGoogle = () => {
         signInWithPopup(auth, provider)

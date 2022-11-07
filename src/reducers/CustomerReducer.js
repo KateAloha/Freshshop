@@ -1,9 +1,32 @@
-import { LOGIN_GOOGLE, USER_NAME, USER_PASSWORD } from '../constants/CustomerType'
+import {
+    LOGIN_GOOGLE,
+    USER_NAME,
+    USER_PASSWORD,
+    INP_FULLNAME,
+    INP_PHONE,
+    INP_EMAIL,
+    INP_ADDRESS,
+    INP_CITY,
+    INP_COUNTRY,
+    INP_PASSWORD,
+    GET_CUSTOMER_DATA,
+    CREATE_NEW_CUSTOMER
+} from '../constants/CustomerType'
 
 const initialState = {
-    user: null,
+    userGoogle: null,
     password: "",
-    userName: ""
+    userName: "",
+    fullNameSignUp: "",
+    phoneSignUp: "",
+    emailSignUp: "",
+    addressSignUp: "",
+    citySignUp: "",
+    coutrySignUp: "",
+    passwordSignUp: "",
+    newCustomer: [],
+    customerData: []
+
 }
 
 const CustomerReducer = (state = initialState, action) => {
@@ -11,7 +34,7 @@ const CustomerReducer = (state = initialState, action) => {
         case LOGIN_GOOGLE:
             return {
                 ...state,
-                user: action.payload
+                userGoogle: action.payload
             }
         case USER_NAME:
             return {
@@ -22,6 +45,51 @@ const CustomerReducer = (state = initialState, action) => {
             return {
                 ...state,
                 userName: action.payload
+            }
+        case INP_FULLNAME:
+            return {
+                ...state,
+                fullNameSignUp: action.payload
+            }
+        case INP_PHONE:
+            return {
+                ...state,
+                phoneSignUp: action.payload
+            }
+        case INP_EMAIL:
+            return {
+                ...state,
+                emailSignUp: action.payload
+            }
+        case INP_ADDRESS:
+            return {
+                ...state,
+                addressSignUp: action.payload
+            }
+        case INP_CITY:
+            return {
+                ...state,
+                citySignUp: action.payload
+            }
+        case INP_COUNTRY:
+            return {
+                ...state,
+                coutrySignUp: action.payload
+            }
+        case INP_PASSWORD:
+            return {
+                ...state,
+                passwordSignUp: action.payload
+            }
+        case GET_CUSTOMER_DATA:
+            return {
+                ...state,
+                customerData: action.payload
+            }
+        case CREATE_NEW_CUSTOMER:
+            return {
+                ...state,
+                newCustomer: action.payload
             }
         default:
             return state;

@@ -1,6 +1,5 @@
 import { GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
 import auth from "../../firebase";
-import LogoutIcon from '@mui/icons-material/Logout';
 
 //import react
 import { useEffect, useState } from 'react';
@@ -9,7 +8,7 @@ import { GoogleLogin } from "../../actions/CustomerAction";
 
 function HeaderComponent() {
     const dispatch = useDispatch()
-    const { user } = useSelector((reduxData) => reduxData.LoginReducer)
+    const { userGoogle } = useSelector((reduxData) => reduxData.CustomerReducer)
     useEffect(() => {
         onAuthStateChanged(auth, (result) => {
             if (result) {
@@ -31,7 +30,7 @@ function HeaderComponent() {
             })
     }
 
-    console.log(user)
+    console.log(userGoogle)
     return (
         <>
             <div className="main-top">
@@ -47,10 +46,10 @@ function HeaderComponent() {
                             </div>
                             <div className="our-link">
                                 <ul>
-                                    {user ?
+                                    {userGoogle ?
                                         <>
                                             <li>
-                                                <img src={user.photoURL} style={{ width: "20px", borderRadius: "50%" }} alt="user-avatar"></img>
+                                                <img src={userGoogle.photoURL} style={{ width: "20px", borderRadius: "50%" }} alt="user-avatar"></img>
                                                 <a href="/my-account"> MY ACCOUNT</a>
                                             </li>
                                             <li><a href="/login" onClick={logoutGoogle}> LOG OUT</a></li>

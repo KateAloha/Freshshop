@@ -20,32 +20,32 @@ function LoginForm() {
     const [login, setLogin] = useState(true)
     console.log(userGoogle)
 
-    const body = {
-        method: "POST",
-        body: JSON.stringify({
-            fullName: "Hehe Bao",
-            phone: "13456789123",
-            email: "khuyentrinh012223@gmail.com",
-            address: "efghnm",
-            city: "zxcv",
-            country: "zxcv ",
-            password: "Khuyen@20000",
-            orders: [],
-        }),
-        headers: {
-          "Content-type": "application/json; charset=UTF-8",
-        },
-      };
+    // const body = {
+    //     method: "POST",
+    //     body: JSON.stringify({
+    //         fullName: "Hehe Bao",
+    //         phone: "13456789123",
+    //         email: "khuyentrinh012223@gmail.com",
+    //         address: "efghnm",
+    //         city: "zxcv",
+    //         country: "zxcv ",
+    //         password: "Khuyen@20000",
+    //         orders: [],
+    //     }),
+    //     headers: {
+    //       "Content-type": "application/json; charset=UTF-8",
+    //     },
+    //   };
     
-    const getData = async ( url, body) => {
-        let response = await fetch(url, body)
-        let data = await response.json()
-        return data
-    }
+    // const getData = async ( url, body) => {
+    //     let response = await fetch(url, body)
+    //     let data = await response.json()
+    //     return data
+    // }
 
-    useEffect(() => {
-        dispatch(getData("http://localhost:8000/customers",body))
-    })
+    // useEffect(() => {
+    //     dispatch(getData("http://localhost:8000/customers",body))
+    // })
 
     const loginGoogle = () => {
         signInWithPopup(auth, provider)

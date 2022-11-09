@@ -1,3 +1,4 @@
+import BreadcrumbComponent from "../BreadcrumbComponent/BreadcrumbComponent"
 import FooterComponent from "../FooterComponent/FooterComponent"
 import HeaderComponent from "../HeaderComponent/HeaderComponent"
 
@@ -6,19 +7,7 @@ function CheckoutComponent() {
         <>
             <HeaderComponent></HeaderComponent>
 
-            <div className="all-title-box">
-                <div className="container">
-                    <div className="row">
-                        <div className="col-lg-12">
-                            <h2>Checkout</h2>
-                            <ul className="breadcrumb" style={{padding: "10px"}}>
-                                <li className="breadcrumb-item"><a href="/shop">Shop</a></li>
-                                <li className="breadcrumb-item active">Checkout</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <BreadcrumbComponent BreadcrumbChild={"CHECK OUT"}></BreadcrumbComponent>
             {/* <!-- End All Title Box -->
 
             <!-- Start Cart  --> */}

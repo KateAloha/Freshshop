@@ -1,5 +1,6 @@
 import FooterComponent from "../FooterComponent/FooterComponent";
 import HeaderComponent from "../HeaderComponent/HeaderComponent";
+import BreadcrumbComponent from "../BreadcrumbComponent/BreadcrumbComponent";
 
 function CartComponent() {
     return (
@@ -7,19 +8,7 @@ function CartComponent() {
            <HeaderComponent></HeaderComponent>
 
             {/* <!-- Start All Title Box --> */}
-            <div class="all-title-box">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <h2>Cart</h2>
-                            <ul class="breadcrumb" style={{ padding: "10px" }}>
-                                <li class="breadcrumb-item"><a href="/shop">Shop</a></li>
-                                <li class="breadcrumb-item active">Cart</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <BreadcrumbComponent BreadcrumbChild={"CART"}></BreadcrumbComponent>
             {/* <!-- End All Title Box -->
 
             <!-- Start Cart  --> */}

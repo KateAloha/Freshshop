@@ -1,3 +1,4 @@
+import BreadcrumbComponent from "../BreadcrumbComponent/BreadcrumbComponent"
 import FooterComponent from "../FooterComponent/FooterComponent"
 import HeaderComponent from "../HeaderComponent/HeaderComponent"
 
@@ -7,19 +8,7 @@ function MyAccountComponent() {
             <HeaderComponent></HeaderComponent>
 
             {/* <!-- Start All Title Box --> */} 
-            <div className="all-title-box">
-                <div className="container">
-                    <div className="row">
-                        <div className="col-lg-12">
-                            <h2>My Account</h2>
-                            <ul className="breadcrumb" style={{padding: "10px"}}>
-                                <li className="breadcrumb-item"><a href="#">Shop</a></li>
-                                <li className="breadcrumb-item active">My Account</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
+           <BreadcrumbComponent BreadcrumbChild={"MY ACCOUNT"}></BreadcrumbComponent>
             {/* <!-- End All Title Box -->
 
             <!-- Start My Account  --> */}

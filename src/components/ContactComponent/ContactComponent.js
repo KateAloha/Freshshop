@@ -1,3 +1,4 @@
+import BreadcrumbComponent from "../BreadcrumbComponent/BreadcrumbComponent"
 import HeaderComponent from "../HeaderComponent/HeaderComponent"
 
 function ContactComponent() {
@@ -6,19 +7,7 @@ function ContactComponent() {
            <HeaderComponent></HeaderComponent>
 
 
-            <div className="all-title-box">
-                <div className="container">
-                    <div className="row">
-                        <div className="col-lg-12">
-                            <h2>Contact Us</h2>
-                            <ul className="breadcrumb">
-                                <li className="breadcrumb-item"><a href="/">Home</a></li>
-                                <li className="breadcrumb-item active"> Contact Us </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <BreadcrumbComponent BreadcrumbChild={"CONTACT US"}></BreadcrumbComponent>
             {/* <!-- End All Title Box -->
 
             <!-- Start Contact Us  --> */}

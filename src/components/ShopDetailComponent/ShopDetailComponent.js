@@ -6,6 +6,7 @@ import HeaderComponent from "../HeaderComponent/HeaderComponent";
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import FooterComponent from "../FooterComponent/FooterComponent";
+import BreadcrumbComponent from "../BreadcrumbComponent/BreadcrumbComponent";
 
 function ShopDetailComponent() {
     const dispatch = useDispatch()
@@ -31,20 +32,8 @@ function ShopDetailComponent() {
             {/* <!-- End Top Search -->
 
             <!-- Start All Title Box --> */}
-            <div className="all-title-box">
-                <div className="container">
-                    <div className="row">
-                        <div className="col-lg-12">
-                            <h2>Shop Detail</h2>
-                            <ul className="breadcrumb" style={{ padding: "10px" }}>
-                                <li className="breadcrumb-item"><a href="#">Shop</a></li>
-                                <li className="breadcrumb-item active">Shop Detail </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            {/* <!-- End All Title Box -->
+            <BreadcrumbComponent BreadcrumbChild={"PRODUCT DETAIL"}></BreadcrumbComponent>
+                {/* <!-- End All Title Box -->
 
             <!-- Start Shop Detail  --> */}
             <div className="shop-detail-box-main">
@@ -53,7 +42,7 @@ function ShopDetailComponent() {
                         <div className="col-xl-5 col-lg-5 col-md-6">
                             <div id="carousel-example-1" className="single-product-slider carousel slide" data-ride="carousel">
                                 <div className="carousel-inner" role="listbox">
-                                    <div className="carousel-item active"> <img className="d-block w-100" src={product.imageURl} alt="First slide" /> </div>                                   
+                                    <div className="carousel-item active"> <img className="d-block w-100" src={product.imageURl} alt="First slide" /> </div>
                                 </div>
                             </div>
                         </div>
@@ -64,7 +53,7 @@ function ShopDetailComponent() {
                                 <p className="available-stock"><span> More than 20 available / <a href="#">8 sold </a></span></p>
                                 <h4>Short Description:</h4>
                                 <p>{product.description} | <span style={{ fontStyle: "italic" }}>One of the Best quality Products that were imported</span></p>
-                                <div className="row mt-5" style={{marginBottom: "50px"}}>
+                                <div className="row mt-5" style={{ marginBottom: "50px" }}>
                                     <div className="col-sm-2">
                                         <h4 style={{ marginTop: "9px" }}>Quantity </h4>
                                     </div>
@@ -295,7 +284,7 @@ function ShopDetailComponent() {
 
                 </div>
             </div>
-           
+
             {/* <!-- End Instagram Feed  -->
             <!-- Start Footer  --> */}
             <FooterComponent></FooterComponent>

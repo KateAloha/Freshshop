@@ -6,6 +6,7 @@ import HeaderComponent from "../HeaderComponent/HeaderComponent"
 import { FilterCategoriesAction, FilterMaxPriceAction, FilterMinPriceAction, FilterNameAction } from "../../actions/FilterAction";
 import { useNavigate } from "react-router-dom";
 import FooterComponent from "../FooterComponent/FooterComponent";
+import BreadcrumbComponent from "../BreadcrumbComponent/BreadcrumbComponent";
 
 function ProductList() {
 
@@ -85,19 +86,7 @@ function ProductList() {
             <HeaderComponent></HeaderComponent>
 
             {/* <!-- Start All Title Box --> */}
-            <div className="all-title-box">
-                <div className="container">
-                    <div className="row">
-                        <div className="col-lg-12">
-                            <h2>Services</h2>
-                            <ul className="breadcrumb" style={{ padding: "10px" }}>
-                                <li className="breadcrumb-item"><a href="/">Home</a></li>
-                                <li className="breadcrumb-item active">Services</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <BreadcrumbComponent BreadcrumbChild={"PRODUCT LIST"}></BreadcrumbComponent>
 
 
             <div className="products-box">

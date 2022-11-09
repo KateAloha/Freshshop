@@ -9,8 +9,12 @@ import { blueGrey, red } from "@mui/material/colors";
 
 function HeaderComponent() {
     const dispatch = useDispatch()
+
     const { userGoogle } = useSelector((reduxData) => reduxData.CustomerReducer)
-    const user = JSON.parse(localStorage.getItem("user"));
+    const user = JSON.parse(localStorage.getItem("user"))
+    const allCart = JSON.parse(localStorage.getItem("allCart"))
+    const allCartSpan = allCart.length
+
     useEffect(() => {
         onAuthStateChanged(auth, (result) => {
             if (result) {
@@ -130,10 +134,10 @@ function HeaderComponent() {
                             <ul>
                                 <li className="search"><a href="#"><i className="fa fa-search"></i></a></li>
                                 <li className="side-menu">
-                                    <a href="#">
+                                    <a href="/cart">
                                         <i className="fa fa-shopping-bag"></i>
-                                        <span className="badge">3</span>
-                                        <p>My Cart</p>
+                                        <span className="badge" style={{color: "red"}}> { allCartSpan }</span>
+                                        <p >My Cart </p>
                                     </a>
                                 </li>
                             </ul>

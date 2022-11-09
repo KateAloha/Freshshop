@@ -1,13 +1,12 @@
 import { Snackbar, Alert } from "@mui/material";
 import { Button, Col, Row, Input } from "reactstrap"
 import "./LoginForm.css"
-import { GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
+import { GoogleAuthProvider, signInWithPopup} from "firebase/auth";
 import auth from "../../firebase";
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { createNewCus, getCusData, GoogleLogin, inpAdressSignUp, inpCitySignUp, inpCountrySignUp, inpEmailLogin, inpEmailSignUp, inpFullNameSignUp, inpPasswordLogin, inpPasswordSignUp, inpPhoneSignUp } from "../../actions/CustomerAction";
 import HeaderComponent from "../HeaderComponent/HeaderComponent";
-import { async } from "@firebase/util";
 import { useNavigate } from "react-router-dom";
 import FooterComponent from "../FooterComponent/FooterComponent";
 const provider = new GoogleAuthProvider();
@@ -23,6 +22,7 @@ function LoginForm() {
     const [textAlert, setTextAlert] = useState("");
     const [alertColor, setAlertColor] = useState("error");
     const [btnLoginClick, setBtnLoginClick] = useState(false)
+    const checkout = JSON.parse(localStorage.getItem('checkout'))
 
     const { userGoogle,
         passwordLogin,
@@ -92,12 +92,16 @@ function LoginForm() {
             return value.email === emailLogin && value.password === passwordLogin
         })
 
-        if (LoginData) {
+        if (LoginData.length > 0) {
             setAlert(true)
             setAlertColor("success")
             setTextAlert("Login Successfully!")
             localStorage.setItem("user",JSON.stringify(LoginData[0]) )
-            navigate(`/`)
+            if (checkout) {
+                navigate('/checkout')
+            } else {
+                navigate('/home')
+            }
         } else {
             setAlert(false)
             setAlertColor("error")
@@ -129,7 +133,7 @@ function LoginForm() {
             dispatch(createNewCus(newCustomerData, setAlert, setAlertColor, setTextAlert))
 
         }
-
+        
     }
 
     const validateNewCustomer = (paramNewCustomer) => {
@@ -207,7 +211,11 @@ function LoginForm() {
             for (let i = 0; i < customerData.length; i++) {
                 if (customerData[i].email == userGoogle.email) {
                     localStorage.setItem("user", JSON.stringify(customerData[i]))
-                    navigate("/")
+                    if (checkout) {
+                        navigate('/checkout')
+                    } else {
+                        navigate('/home')
+                    }
                 }
             }
         } else if (!checkNewCustomerEmail && userGoogle != null) {

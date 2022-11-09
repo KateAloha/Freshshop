@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux"
 import { ChangeNoPage, FilterAction, getAllListData } from "../../actions/ProductListAction";
-import { Grid, Pagination, TextField, Box, Typography, List, ListItem, Checkbox } from "@mui/material";
+import { Grid, Pagination, TextField, Box, Typography, List, ListItem, Checkbox, createChainedFunction } from "@mui/material";
 import HeaderComponent from "../HeaderComponent/HeaderComponent"
 import { FilterCategoriesAction, FilterMaxPriceAction, FilterMinPriceAction, FilterNameAction } from "../../actions/FilterAction";
 import { useNavigate } from "react-router-dom";
@@ -16,11 +16,13 @@ function ProductList() {
     const { filterMaxPrice, filterMinPrice, filterName, filterCategories } = useSelector((reduxData) => reduxData.FilterReducer)
     const { products, productsFilter, currentPage, limitProduct } = useSelector((reduxData) => reduxData.ProductListReducer)
 
+
     const price = [20000, 40000, 60000, 80000];
     const productPagination = products.slice((currentPage - 1) * limitProduct, currentPage * limitProduct);
     const productFilterPagination = productsFilter.slice((currentPage - 1) * limitProduct, currentPage * limitProduct)
     const numPagePagination = Math.ceil(products.length / limitProduct)
     const numPageFilterPagination = Math.ceil(productsFilter.length / limitProduct)
+    const allCart = JSON.parse(localStorage.getItem("allCart"))
 
     useEffect(() => {
         dispatch(getAllListData())
@@ -80,6 +82,25 @@ function ProductList() {
 
     const onDetailClick = (productDetail) => {
         navigate(`/shop-detail/${productDetail._id}`)
+    }
+
+    const onAddToCartClick = (productDetail) => {
+        
+        if (allCart == null) {
+            let cart = []
+            localStorage.setItem("allCart", JSON.stringify(cart))
+            const allCartNew = [{...productDetail, qtyBuy: 1}]
+            localStorage.setItem("allCart", JSON.stringify(allCartNew))
+        } else {
+            const checkCartExisted = allCart.find((cartProduct) => productDetail._id === cartProduct._id)
+            if (checkCartExisted) {
+                const allCartNew = allCart.map((cartProduct) => productDetail._id === cartProduct._id ? { ...checkCartExisted, qtyBuy: checkCartExisted.qtyBuy + 1 } : cartProduct)
+                localStorage.setItem("allCart", JSON.stringify(allCartNew))
+            } else {
+                const allCartNew = [...allCart, { ...productDetail, qtyBuy: 1 }]
+                localStorage.setItem("allCart", JSON.stringify(allCartNew))
+            }
+        }
     }
     return (
         <>
@@ -164,7 +185,7 @@ function ProductList() {
                             <div className="row special-list">
                                 {
                                     !filter ?
-                                    
+
                                         productPagination.map((product, index) => {
                                             return (
                                                 <div className="col-lg-4 col-md-6 special-grid bulbs">
@@ -173,14 +194,14 @@ function ProductList() {
                                                             <div className="type-lb">
                                                                 <p className="sale">Sale</p>
                                                             </div>
-                                                            <img src={product.imageURl} style={{width: "300px", height: "250px"}} className="img-fluid" alt="Image" />
+                                                            <img src={product.imageURl} style={{ width: "300px", height: "250px" }} className="img-fluid" alt="Image" />
                                                             <div className="mask-icon">
                                                                 <ul>
                                                                     <li><a href="#" data-toggle="tooltip" data-placement="right" title="View" onClick={() => onDetailClick(product)}><i className="fas fa-eye"></i></a></li>
                                                                     <li><a href="#" data-toggle="tooltip" data-placement="right" title="Reload"><i className="fas fa-sync-alt"></i></a></li>
-                                                                    
+
                                                                 </ul>
-                                                                <a className="cart" href="#">Add to Cart</a>
+                                                                <a className="cart" href="#" onClick={() => onAddToCartClick(product)}>Add to Cart</a>
                                                             </div>
                                                         </div>
                                                         <div style={{ backgroundColor: "#b0b435", borderRadius: "10px", height: "30px", width: "300px", marginTop: "10px", color: "white", fontWeight: "bold" }} className="text-center">{product.name} : {product.buyPrice}/kg</div>
@@ -197,14 +218,14 @@ function ProductList() {
                                                             <div className="type-lb">
                                                                 <p className="sale">Sale</p>
                                                             </div>
-                                                            <img src={productFilter.imageURl} style={{width: "300px", height: "250px"}} className="img-fluid" alt="Image" />
+                                                            <img src={productFilter.imageURl} style={{ width: "300px", height: "250px" }} className="img-fluid" alt="Image" />
                                                             <div className="mask-icon">
                                                                 <ul>
                                                                     <li><a href="#" data-toggle="tooltip" data-placement="right" title="View" ><i className="fas fa-eye"></i></a></li>
                                                                     <li><a href="#" data-toggle="tooltip" data-placement="right" title="Reload"><i className="fas fa-sync-alt"></i></a></li>
-                                                                    
+
                                                                 </ul>
-                                                                <a className="cart" href="#">Add to Cart</a>
+                                                                <a className="cart" href="#" onClick={() => onAddToCartClick(productFilter)}>Add to Cart</a>
                                                             </div>
                                                         </div>
                                                         <div style={{ backgroundColor: "#b0b435", borderRadius: "10px", height: "30px", width: "300px", marginTop: "10px", color: "white", fontWeight: "bold" }} className="text-center">{productFilter.name} : {productFilter.buyPrice}/kg</div>
@@ -216,14 +237,14 @@ function ProductList() {
                             </div>
                         </div>
                         <Grid container justifyContent='end' className="mt-3 mb-4">
-                            <Pagination count={!filter? numPagePagination : numPageFilterPagination} defaultPage={currentPage} onChange={handlePageChange} />
+                            <Pagination count={!filter ? numPagePagination : numPageFilterPagination} defaultPage={currentPage} onChange={handlePageChange} />
                         </Grid>
                     </div>
                 </div>
             </div>
             {/* <!-- End Gallery  -->
             <!-- Start Instagram Feed  --> */}
-           
+
             {/* <!-- End Instagram Feed  -->
 
 

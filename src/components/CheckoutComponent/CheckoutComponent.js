@@ -3,6 +3,7 @@ import FooterComponent from "../FooterComponent/FooterComponent"
 import HeaderComponent from "../HeaderComponent/HeaderComponent"
 
 function CheckoutComponent() {
+
     return (
         <>
             <HeaderComponent></HeaderComponent>
@@ -15,10 +16,7 @@ function CheckoutComponent() {
                 <div className="container">
                     <div className="row new-account-login">
                         <div className="col-sm-6 col-lg-6 mb-3">
-                            <div className="title-left">
-                                <h3>Account Login</h3>
-                            </div>
-                            <h5><a data-toggle="collapse" href="#formLogin" role="button" aria-expanded="false">Click here to Login</a></h5>
+
                             <form className="mt-3 collapse review-form-box" id="formLogin">
                                 <div className="form-row">
                                     <div className="form-group col-md-6">
@@ -32,10 +30,7 @@ function CheckoutComponent() {
                             </form>
                         </div>
                         <div className="col-sm-6 col-lg-6 mb-3">
-                            <div className="title-left">
-                                <h3>Create New Account</h3>
-                            </div>
-                            <h5><a data-toggle="collapse" href="#formRegister" role="button" aria-expanded="false">Click here to Register</a></h5>
+
                             <form className="mt-3 collapse review-form-box" id="formRegister">
                                 <div className="form-row">
                                     <div className="form-group col-md-6">
@@ -78,7 +73,7 @@ function CheckoutComponent() {
                                         <label for="username">Username *</label>
                                         <div className="input-group">
                                             <input type="text" className="form-control" id="username" placeholder="" required />
-                                            <div className="invalid-feedback" style={{width: "100%"}}> Your username is required. </div>
+                                            <div className="invalid-feedback" style={{ width: "100%" }}> Your username is required. </div>
                                         </div>
                                     </div>
                                     <div className="mb-3">
@@ -272,7 +267,7 @@ function CheckoutComponent() {
 
                 </div>
             </div>
-            
+
             {/* <!-- End Instagram Feed  -->
             <!-- Start Footer  --> */}
             <FooterComponent></FooterComponent>

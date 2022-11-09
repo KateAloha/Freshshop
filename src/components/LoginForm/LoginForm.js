@@ -1,72 +1,41 @@
-import login from "../../assets/images/login.jpg";
+import { Snackbar, Alert } from "@mui/material";
 import { Button, Col, Row, Input } from "reactstrap"
-import { Grid } from "@mui/material";
 import "./LoginForm.css"
 import { GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "firebase/auth";
 import auth from "../../firebase";
-
-//import react
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { createNewCus, GoogleLogin } from "../../actions/CustomerAction";
+import { createNewCus, getCusData, GoogleLogin, inpAdressSignUp, inpCitySignUp, inpCountrySignUp, inpEmailLogin, inpEmailSignUp, inpFullNameSignUp, inpPasswordLogin, inpPasswordSignUp, inpPhoneSignUp } from "../../actions/CustomerAction";
 import HeaderComponent from "../HeaderComponent/HeaderComponent";
+import { async } from "@firebase/util";
+import { useNavigate } from "react-router-dom";
+import FooterComponent from "../FooterComponent/FooterComponent";
 const provider = new GoogleAuthProvider();
 
 
 function LoginForm() {
 
     const dispatch = useDispatch();
-    const { userGoogle } = useSelector((reduxData) => reduxData.CustomerReducer)
+    const navigate = useNavigate()
+
     const [login, setLogin] = useState(true)
-    console.log(userGoogle)
+    const [alert, setAlert] = useState(false);
+    const [textAlert, setTextAlert] = useState("");
+    const [alertColor, setAlertColor] = useState("error");
+    const [btnLoginClick, setBtnLoginClick] = useState(false)
 
-    // const body = {
-    //     method: "POST",
-    //     body: JSON.stringify({
-    //         fullName: "Hehe Bao",
-    //         phone: "13456789123",
-    //         email: "khuyentrinh012223@gmail.com",
-    //         address: "efghnm",
-    //         city: "zxcv",
-    //         country: "zxcv ",
-    //         password: "Khuyen@20000",
-    //         orders: [],
-    //     }),
-    //     headers: {
-    //       "Content-type": "application/json; charset=UTF-8",
-    //     },
-    //   };
-    
-    // const getData = async ( url, body) => {
-    //     let response = await fetch(url, body)
-    //     let data = await response.json()
-    //     return data
-    // }
-
-    // useEffect(() => {
-    //     dispatch(getData("http://localhost:8000/customers",body))
-    // })
-
-    const loginGoogle = () => {
-        signInWithPopup(auth, provider)
-            .then((result) => {
-                // console.log(result);
-                dispatch(GoogleLogin(result.user));
-            })
-            .catch((error) => {
-                console.error(error);
-            })
-    }
-
-    const logoutGoogle = () => {
-        signOut(auth)
-            .then(() => {
-                dispatch(GoogleLogin(null));
-            })
-            .catch((error) => {
-                console.error(error);
-            })
-    }
+    const { userGoogle,
+        passwordLogin,
+        emailLogin,
+        fullNameSignUp,
+        phoneSignUp,
+        emailSignUp,
+        addressSignUp,
+        citySignUp,
+        countrySignUp,
+        passwordSignUp,
+        customerData,
+        newCustomer } = useSelector((reduxData) => reduxData.CustomerReducer)
 
     const onBtnSignUp = () => {
         setLogin(false)
@@ -74,6 +43,201 @@ function LoginForm() {
 
     const onBtnLogin = () => {
         setLogin(true)
+    }
+
+    const handleCloseAlert = () => {
+        setAlert(false)
+    }
+
+    const onEmailLogin = (event) => {
+        dispatch(inpEmailLogin(event.target.value))
+    }
+
+    const onPasswordLogin = (event) => {
+        dispatch(inpPasswordLogin(event.target.value))
+    }
+
+    const onFullNameSignUp = (event) => {
+        console.log(event)
+        dispatch(inpFullNameSignUp(event.target.value))
+    }
+
+    const onPhoneSignUp = (event) => {
+        dispatch(inpPhoneSignUp(event.target.value))
+    }
+
+    const onEmailSignUp = (event) => {
+        dispatch(inpEmailSignUp(event.target.value))
+    }
+
+    const onAddressSignUp = (event) => {
+        dispatch(inpAdressSignUp(event.target.value))
+    }
+
+    const onCitySignUp = (event) => {
+        dispatch(inpCitySignUp(event.target.value))
+    }
+
+    const onCountrySignUp = (event) => {
+        dispatch(inpCountrySignUp(event.target.value))
+    }
+
+    const onPasswordSignUp = (event) => {
+        dispatch(inpPasswordSignUp(event.target.value))
+    }
+
+    const onBtnConfirmLoginClick = () => {
+        setBtnLoginClick(true)
+        let LoginData = customerData.filter((value, index) => {
+            return value.email === emailLogin && value.password === passwordLogin
+        })
+
+        if (LoginData) {
+            setAlert(true)
+            setAlertColor("success")
+            setTextAlert("Login Successfully!")
+            localStorage.setItem("user",JSON.stringify(LoginData[0]) )
+            navigate(`/`)
+        } else {
+            setAlert(false)
+            setAlertColor("error")
+            setTextAlert("Your email or your password information is incorrect! Please check again!")
+        }
+    }
+
+    const onBtnConfirmSignUpClick = () => {
+        var newCustomerCheck = {
+            fullName: fullNameSignUp,
+            phone: Number(phoneSignUp),
+            email: emailSignUp,
+            address: addressSignUp,
+            city: citySignUp,
+            country: countrySignUp,
+            password: passwordSignUp
+        }
+        const validate = validateNewCustomer(newCustomerCheck)
+        if (validate) {
+            const newCustomerData = {
+                fullName: newCustomerCheck.fullName,
+                phone: newCustomerCheck.phone,
+                email: newCustomerCheck.email,
+                address: newCustomerCheck.address,
+                city: newCustomerCheck.city,
+                country: newCustomerCheck.country,
+                password: newCustomerCheck.password,
+            }
+            dispatch(createNewCus(newCustomerData, setAlert, setAlertColor, setTextAlert))
+
+        }
+
+    }
+
+    const validateNewCustomer = (paramNewCustomer) => {
+        const checkNewCustomerEmail = customerData.some(customer =>
+            customer.email === paramNewCustomer.email
+        )
+        // var phoneRegex = /^\d{10}$/
+        var emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+        var passRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/
+        if (paramNewCustomer.fullName === "") {
+            setAlert(true)
+            setAlertColor("error")
+            setTextAlert("Please enter your Full Name")
+            return false
+        } else if ((isNaN(paramNewCustomer.phone)) || (paramNewCustomer.length < 10)) {
+            setAlert(true)
+            setAlertColor("error")
+            setTextAlert("Your Phone Number is invalid! Please try again")
+            return false
+        } else if (paramNewCustomer.phone.length === 0) {
+            setAlert(true)
+            setAlertColor("error")
+            setTextAlert("Your Phone Number is invalid! Please try again")
+            return false
+        } else if (checkNewCustomerEmail) {
+            setAlert(true)
+            setAlertColor("error")
+            setTextAlert("Your email account already exists! Please Login By Google Account")
+            return false
+        } else if (!emailRegex.test(paramNewCustomer.email)) {
+            setAlert(true)
+            setAlertColor("error")
+            setTextAlert("Your Email is invalid! Please try again")
+            return false
+        } else if (paramNewCustomer.email === "") {
+            setAlert(true)
+            setAlertColor("error")
+            setTextAlert("Please enter your Email")
+            return false
+        } else if (paramNewCustomer.address === "") {
+            setAlert(true)
+            setAlertColor("error")
+            setTextAlert("Please enter your Address")
+            return false
+        } else if (paramNewCustomer.city === "") {
+            setAlert(true)
+            setAlertColor("error")
+            setTextAlert("Please enter your City")
+            return false
+        } else if (paramNewCustomer.country === "") {
+            setAlert(true)
+            setAlertColor("error")
+            setTextAlert("Please enter your Country")
+            return false
+        } else if (!passRegex.test(paramNewCustomer.password)) {
+            setAlert(true)
+            setAlertColor("error")
+            setTextAlert("Your password must between 6 to 20 characters which contain at least one numeric digit, one uppercase and one lowercase letter")
+            return false
+        } else if (paramNewCustomer.password.length === 0) {
+            setAlert(true)
+            setAlertColor("error")
+            setTextAlert("Please enter your Password")
+            return false
+        }
+        return true
+    }
+
+    const checkNewCustomerHandler = () => {
+        const checkNewCustomerEmail = customerData.some(customer =>
+            customer.email === userGoogle.email
+        )
+
+        if (checkNewCustomerEmail) {
+            for (let i = 0; i < customerData.length; i++) {
+                if (customerData[i].email == userGoogle.email) {
+                    localStorage.setItem("user", JSON.stringify(customerData[i]))
+                    navigate("/")
+                }
+            }
+        } else if (!checkNewCustomerEmail && userGoogle != null) {
+            var newCustomerByMail = {
+                fullName: userGoogle.displayName,
+                email: userGoogle.email
+            }
+
+            dispatch(createNewCus(newCustomerByMail))
+        }
+    }
+
+    useEffect(() => {
+        dispatch(getCusData())
+        if (userGoogle) {
+            checkNewCustomerHandler()
+        }
+    }, [userGoogle, setBtnLoginClick])
+
+    console.log(userGoogle)
+    console.log(customerData)
+    const loginGoogle = () => {
+        signInWithPopup(auth, provider)
+            .then((result) => {
+                dispatch(GoogleLogin(result.user))
+
+            })
+            .catch((error) => {
+                console.error(error);
+            })
     }
 
     return (
@@ -101,16 +265,16 @@ function LoginForm() {
                                                         <h2 className="textWelcome">Welcome Back!</h2>
                                                     </Row>
                                                     <Row>
-                                                        <Input placeholder="Email Address*" className="input" ></Input>
+                                                        <Input placeholder="Email Address*" className="input" value={emailLogin} onChange={onEmailLogin} id="emailLogin"></Input>
                                                     </Row>
                                                     <Row>
-                                                        <Input placeholder="Passwords*" className="input" ></Input>
+                                                        <Input placeholder="Passwords*" className="input" value={passwordLogin} onChange={onPasswordLogin} id="passwordLogin"></Input>
                                                     </Row>
                                                     <Row>
                                                         <p className="textForgotPassword">Forgot Passwords</p>
                                                     </Row>
                                                     <Row>
-                                                        <Button className="loginButtonLarge" >Log In</Button>
+                                                        <Button className="loginButtonLarge" onClick={onBtnConfirmLoginClick}>Log In</Button>
                                                     </Row>
                                                     <Row>
                                                         <Button className="loginGoogleButton" onClick={loginGoogle}>Log In Google</Button>
@@ -130,28 +294,28 @@ function LoginForm() {
                                                         <h2 className="textWelcome">Sign Up For Free</h2>
                                                     </Row>
                                                     <Row>
-                                                        <Input placeholder="Full Name*" className="input" ></Input>
+                                                        <Input placeholder="Full Name*" className="input" value={fullNameSignUp} onChange={onFullNameSignUp}></Input>
                                                     </Row>
                                                     <Row>
-                                                        <Input placeholder="Phone Number*" className="input" ></Input>
+                                                        <Input placeholder="Phone Number*" className="input" value={phoneSignUp} onChange={onPhoneSignUp}></Input>
                                                     </Row>
                                                     <Row>
-                                                        <Input placeholder="Email Address*" className="input" ></Input>
+                                                        <Input placeholder="Email Address*" className="input" onChange={onEmailSignUp}></Input>
                                                     </Row>
                                                     <Row>
-                                                        <Input placeholder="Address*" className="input" ></Input>
+                                                        <Input placeholder="Address*" className="input" onChange={onAddressSignUp}></Input>
                                                     </Row>
                                                     <Row>
-                                                        <Input placeholder="City*" className="input" ></Input>
+                                                        <Input placeholder="City*" className="input" onChange={onCitySignUp}></Input>
                                                     </Row>
                                                     <Row>
-                                                        <Input placeholder="Country*" className="input" ></Input>
+                                                        <Input placeholder="Country*" className="input" onChange={onCountrySignUp}></Input>
                                                     </Row>
                                                     <Row>
-                                                        <Input placeholder="Set A Password*" className="input" ></Input>
+                                                        <Input placeholder="Set A Password*" className="input" onChange={onPasswordSignUp}></Input>
                                                     </Row>
                                                     <Row>
-                                                        <Button className="loginButtonLarge" >Get Started</Button>
+                                                        <Button className="loginButtonLarge" onClick={onBtnConfirmSignUpClick}>Get Started</Button>
                                                     </Row>
                                                 </div>
                                             </div>
@@ -160,101 +324,19 @@ function LoginForm() {
                                 </div>
                             </div>
                         </div>
+                        <Snackbar
+                            open={alert}
+                            autoHideDuration={5000}
+                            onClose={handleCloseAlert}
+                        >
+                            <Alert onClose={handleCloseAlert} severity={alertColor}>{textAlert}</Alert>
+                        </Snackbar>
                     </div>
                 </section>
             </div>
 
-
-
-            <footer>
-                <div className="footer-main">
-                    <div className="container">
-                        <div className="row">
-                            <div className="col-lg-4 col-md-12 col-sm-12">
-                                <div className="footer-top-box">
-                                    <h3>Business Time</h3>
-                                    <ul className="list-time">
-                                        <li>Monday - Friday: 08.00am to 05.00pm</li> <li>Saturday: 10.00am to 08.00pm</li> <li>Sunday: <span>Closed</span></li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div className="col-lg-4 col-md-12 col-sm-12">
-                                <div className="footer-top-box">
-                                    <h3>Newsletter</h3>
-                                    <form className="newsletter-box">
-                                        <div className="form-group">
-                                            <input className="" type="email" name="Email" placeholder="Email Address*" />
-                                            <i className="fa fa-envelope"></i>
-                                        </div>
-                                        <button className="btn hvr-hover" type="submit">Submit</button>
-                                    </form>
-                                </div>
-                            </div>
-                            <div className="col-lg-4 col-md-12 col-sm-12">
-                                <div className="footer-top-box">
-                                    <h3>Social Media</h3>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                                    <ul>
-                                        <li><a href="#"><i className="fab fa-facebook" aria-hidden="true"></i></a></li>
-                                        <li><a href="#"><i className="fab fa-twitter" aria-hidden="true"></i></a></li>
-                                        <li><a href="#"><i className="fab fa-linkedin" aria-hidden="true"></i></a></li>
-                                        <li><a href="#"><i className="fab fa-google-plus" aria-hidden="true"></i></a></li>
-                                        <li><a href="#"><i className="fa fa-rss" aria-hidden="true"></i></a></li>
-                                        <li><a href="#"><i className="fab fa-pinterest-p" aria-hidden="true"></i></a></li>
-                                        <li><a href="#"><i className="fab fa-whatsapp" aria-hidden="true"></i></a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                        <hr />
-                        <div className="row">
-                            <div className="col-lg-4 col-md-12 col-sm-12">
-                                <div className="footer-widget">
-                                    <h4>About Freshshop</h4>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-                                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. </p>
-                                </div>
-                            </div>
-                            <div className="col-lg-4 col-md-12 col-sm-12">
-                                <div className="footer-link">
-                                    <h4>Information</h4>
-                                    <ul>
-                                        <li><a href="#">About Us</a></li>
-                                        <li><a href="#">Customer Service</a></li>
-                                        <li><a href="#">Our Sitemap</a></li>
-                                        <li><a href="#">Terms &amp; Conditions</a></li>
-                                        <li><a href="#">Privacy Policy</a></li>
-                                        <li><a href="#">Delivery Information</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div className="col-lg-4 col-md-12 col-sm-12">
-                                <div className="footer-link-contact">
-                                    <h4>Contact Us</h4>
-                                    <ul>
-                                        <li>
-                                            <p><i className="fas fa-map-marker-alt"></i>Address: Michael I. Days 3756 <br />Preston Street Wichita,<br /> KS 67213 </p>
-                                        </li>
-                                        <li>
-                                            <p><i className="fas fa-phone-square"></i>Phone: <a href="tel:+1-888705770">+1-888 705 770</a></p>
-                                        </li>
-                                        <li>
-                                            <p><i className="fas fa-envelope"></i>Email: <a href="mailto:contactinfo@gmail.com">contactinfo@gmail.com</a></p>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </footer>
-
-            <div className="footer-copyright">
-                <p className="footer-company">All Rights Reserved. &copy; 2018 <a href="#">ThewayShop</a> Design By :
-                    <a href="https://html.design/">html design</a></p>
-            </div>
-
-            <a href="/" id="back-to-top" title="Back to top" style={{ display: "none" }}>&uarr;</a>
+            {/* Start Footer */}
+            <FooterComponent></FooterComponent>
         </>
 
     )

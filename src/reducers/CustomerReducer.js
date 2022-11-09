@@ -1,7 +1,7 @@
 import {
     LOGIN_GOOGLE,
-    USER_NAME,
-    USER_PASSWORD,
+    EMAIL_LOGIN,
+    PASSWORD_LOGIN,
     INP_FULLNAME,
     INP_PHONE,
     INP_EMAIL,
@@ -15,14 +15,14 @@ import {
 
 const initialState = {
     userGoogle: null,
-    password: "",
-    userName: "",
+    passwordLogin: "",
+    emailLogin: "",
     fullNameSignUp: "",
     phoneSignUp: "",
     emailSignUp: "",
     addressSignUp: "",
     citySignUp: "",
-    coutrySignUp: "",
+    countrySignUp: "",
     passwordSignUp: "",
     newCustomer: [],
     customerData: []
@@ -36,15 +36,15 @@ const CustomerReducer = (state = initialState, action) => {
                 ...state,
                 userGoogle: action.payload
             }
-        case USER_NAME:
+        case EMAIL_LOGIN:
             return {
                 ...state,
-                password: action.payload
+                emailLogin: action.payload
             }
-        case USER_PASSWORD:
+        case PASSWORD_LOGIN:
             return {
                 ...state,
-                userName: action.payload
+                passwordLogin: action.payload
             }
         case INP_FULLNAME:
             return {
@@ -74,7 +74,7 @@ const CustomerReducer = (state = initialState, action) => {
         case INP_COUNTRY:
             return {
                 ...state,
-                coutrySignUp: action.payload
+                countrySignUp: action.payload
             }
         case INP_PASSWORD:
             return {

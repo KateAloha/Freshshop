@@ -5,14 +5,17 @@ import auth from "../../firebase";
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { GoogleLogin } from "../../actions/CustomerAction";
+import { blueGrey, red } from "@mui/material/colors";
 
 function HeaderComponent() {
     const dispatch = useDispatch()
     const { userGoogle } = useSelector((reduxData) => reduxData.CustomerReducer)
+    const user = JSON.parse(localStorage.getItem("user"));
     useEffect(() => {
         onAuthStateChanged(auth, (result) => {
             if (result) {
                 dispatch(GoogleLogin(result));
+
             } else {
                 dispatch(GoogleLogin(null));
             }
@@ -28,9 +31,9 @@ function HeaderComponent() {
             .catch((error) => {
                 console.error(error);
             })
+        localStorage.setItem("user", null)
     }
 
-    console.log(userGoogle)
     return (
         <>
             <div className="main-top">
@@ -46,11 +49,20 @@ function HeaderComponent() {
                             </div>
                             <div className="our-link">
                                 <ul>
-                                    {userGoogle ?
+                                    {user ?
                                         <>
                                             <li>
-                                                <img src={userGoogle.photoURL} style={{ width: "20px", borderRadius: "50%" }} alt="user-avatar"></img>
-                                                <a href="/my-account"> MY ACCOUNT</a>
+                                                <div className="row">
+                                                    <div className="col-sm-2">
+                                                        <div style={{ width: "22px", height: "22px", borderRadius: "100px", backgroundColor: "#993333" }}>
+                                                            <div style={{width: "100%", textAlign: "center", color: "white", fontSize: "15px", fontWeight: "bold", lineHeight: "18px"}}>{user.fullName.charAt(0)}</div>
+                                                        </div>
+                                                    </div>
+                                                    <div className="col-sm-10">
+                                                        <a href="/my-account" >MY ACCOUNT</a>
+                                                    </div>
+                                                </div>
+                                                
                                             </li>
                                             <li><a href="/login" onClick={logoutGoogle}> LOG OUT</a></li>
                                         </>

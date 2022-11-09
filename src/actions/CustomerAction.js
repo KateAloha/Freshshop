@@ -1,7 +1,7 @@
 import {
     LOGIN_GOOGLE,
-    USER_NAME,
-    USER_PASSWORD,
+    EMAIL_LOGIN,
+    PASSWORD_LOGIN,
     INP_FULLNAME,
     INP_PHONE,
     INP_EMAIL,
@@ -20,16 +20,16 @@ export const GoogleLogin = (value) => {
     }
 }
 
-export const inpUserNameLogin = (value) => {
+export const inpEmailLogin = (value) => {
     return {
-        type: USER_NAME,
+        type: EMAIL_LOGIN,
         payload: value
     }
 }
 
 export const inpPasswordLogin = (value) => {
     return {
-        type: USER_PASSWORD,
+        type: PASSWORD_LOGIN,
         payload: value
     }
 }
@@ -84,24 +84,42 @@ export const inpPasswordSignUp = (value) => {
     }
 }
 
-export const createNewCus = (body) => async dispatch => {
-    // console.log(dataUser)
-    // var requestOptions = {
-    //     method: 'POST',
-    //     redirect: 'follow',
-    //     body: dataUser
-    // }
+export const createNewCus = (dataUser, setAlert, setAlertColor, setTextAlert) => async dispatch => {
+    console.log(dataUser)
+    var requestOptions = {
+        method: 'POST',
+        body: JSON.stringify({
+            fullName: dataUser.fullName,
+            phone: dataUser.phone,
+            email: dataUser.email,
+            address: dataUser.address,
+            city: dataUser.city,
+            country: dataUser.country,
+            password: dataUser.password,
+            orders: [],
+        }),
+        headers: {
+            'Content-type': 'application/json; charset=UTF-8',
+        }
+
+    }
     try {
-        const response = await fetch(`http://localhost:8000/customers`, body);
+        const response = await fetch(`http://localhost:8000/customers`, requestOptions);
         const data = await response.json();
         console.log(data)
+        setAlert(true)
+        setAlertColor("success")
+        setTextAlert("Sign Up successfully, PLease login to active your account")
         return dispatch({
             type: CREATE_NEW_CUSTOMER,
-            payload: data?.Customer||data
+            payload: data?.newCustomer
         });
     }
     catch (error) {
         console.log("error")
+        setAlert(true)
+        setAlertColor("error")
+        setTextAlert("Sign Up Unsuccessfully: ", error)
     }
 }
 
@@ -115,7 +133,7 @@ export const getCusData = () => async dispatch => {
         const data = await response.json();
         return dispatch({
             type: GET_CUSTOMER_DATA,
-            payload: data.Customer
+            payload: data?.Customer
         });
     }
     catch (error) {

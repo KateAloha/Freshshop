@@ -1,21 +1,42 @@
 import { async } from "@firebase/util"
 import { useEffect, useState } from "react"
 import { json, useNavigate } from "react-router-dom"
-import { Snackbar, Alert } from "@mui/material"
+import { Snackbar, Alert, Grid, Modal } from "@mui/material"
 import BreadcrumbComponent from "../BreadcrumbComponent/BreadcrumbComponent"
 import FooterComponent from "../FooterComponent/FooterComponent"
 import HeaderComponent from "../HeaderComponent/HeaderComponent"
+import { Container, Row } from "reactstrap"
+import { Box } from "@mui/system"
+import ThankyouImg from "../../assets/images/thank-you.jpg"
+import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined'
+import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined'
+import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined'
+import ForwardOutlinedIcon from '@mui/icons-material/ForwardOutlined';
 
 function CheckoutComponent() {
 
     const navigate = useNavigate()
 
+    const style = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: 600,
+        bgcolor: "white",
+        boxShadow: "black 0px 10px 29px 10px",
+        p: 4,
+        borderRadius: "10%"
+    };
+
+    //Create Const variable
     const [payment, setPayment] = useState('')
     const [shipping, setShipping] = useState('')
     const [updateData, setUpdateData] = useState(0)
     const [alert, setAlert] = useState(false);
     const [textAlert, setTextAlert] = useState("");
     const [alertColor, setAlertColor] = useState("error");
+    const [openModal, setOpenModal] = useState(false)
 
     const checkout = JSON.parse(localStorage.getItem('checkout'))
     const user = JSON.parse(localStorage.getItem('user'))
@@ -115,10 +136,11 @@ function CheckoutComponent() {
 
     //On Btn place order click
     const onBtnPlaceOrderClick = () => {
-
+        //Create orderDate & shippedDate variable
         let orderDateData = new Date().toLocaleDateString()
         let shippedDateData = new Date()
 
+        //Check Shipping Method Selection to create shippedDate
         if (checkout.shippingCost == "Free") {
             shippedDateData = shippingDateValue(orderDateData, 7)
         } else if (checkout.shippingCost == 20000) {
@@ -126,7 +148,9 @@ function CheckoutComponent() {
         } else {
             shippedDateData = shippingDateValue(orderDateData, 1)
         }
-        var orderCheck = {
+
+        //Create orderCheck variable
+        const orderCheck = {
             orderDate: orderDateData,
             shippedDate: shippedDateData,
             city: user.city,
@@ -139,7 +163,10 @@ function CheckoutComponent() {
             cost: checkout.grandTotal,
         }
 
+        //Validate OrderCheck
         const orderValidate = validateOrder(orderCheck)
+
+        // if orderCheck is valid, call API to post new orderModel
         if (orderValidate) {
             const orderNewBody = {
                 method: 'POST',
@@ -154,7 +181,7 @@ function CheckoutComponent() {
                     payment: orderCheck.payment,
                     shipping: orderCheck.shipping,
                     cost: Number(orderCheck.cost)
-                    
+
                 }),
                 headers: {
                     'Content-type': 'application/json; charset=UTF-8'
@@ -162,11 +189,47 @@ function CheckoutComponent() {
 
             }
             createData('http://localhost:8000/orders', orderNewBody)
-            .then((data) => {
-                console.log(data)
-            })
+                .then((orderData) => {
+
+                    //Create OrderDetail variable
+                    const productsDetail = checkout.products
+
+                    //Create each orderDetail in the products list, call API to post orderDetail
+                    productsDetail.map((productDetail, index) => {
+                        const orderDetailBody = {
+                            method: 'POST',
+                            body: JSON.stringify({
+                                product: productDetail._id,
+                                quantity: Number(productDetail.qtyBuy),
+                                order: orderData.newOrderInput._id
+                            }),
+                            headers: {
+                                'Content-type': 'application/json; charset=UTF-8'
+                            }
+
+                        }
+                        createData('http://localhost:8000/order-details', orderDetailBody)
+                            .then((orderDataDetail) => {
+                            }).catch((error) => {
+                                setAlert(true);
+                                setTextAlert(`Can not load the Product number ${index + 1} in the Products list, error: `, error);
+                                setAlertColor("error");
+                            })
+
+                    })
+                    setAlert(true);
+                    setTextAlert("Create order successfully!");
+                    setAlertColor("success")
+                    setOpenModal(true)
+                    localStorage.setItem('allCart', JSON.stringify([]))
+
+                }).catch((error) => {
+                    setAlert(true);
+                    setTextAlert(`Can not load your Order, error: ${error}`,);
+                    setAlertColor("error");
+                })
         }
-        
+
     }
 
     const validateOrder = (paramOrder) => {
@@ -354,6 +417,29 @@ function CheckoutComponent() {
                 >
                     <Alert onClose={handleCloseAlert} severity={alertColor}>{textAlert}</Alert>
                 </Snackbar>
+                <Container>
+                    <Grid container>
+                        <Grid item xs={12} sm={12} md={12} lg={12}>
+                            <Modal open={openModal}>
+                                <Box sx={style}>
+                                    <div className="row">
+                                        <div className="col-sm-12">
+                                            <img src={ThankyouImg} style={{ objectFit: "cover" }}></img>
+                                        </div>
+                                    </div>
+                                    <div className="row text-center">
+                                        <div className="col-sm-12">
+                                            <div >
+                                                <a href="/" className=" btn btn-success hvr-hover" style={{ color: "white", fontWeight: "bold", marginRight: "10px" }}>Go Home</a>
+                                                <a href="/order-history" className=" btn btn-warning hvr-hover" style={{ color: "white", fontWeight: "bold" }}>View Order</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Box>
+                            </Modal>
+                        </Grid>
+                    </Grid>
+                </Container>
             </div>
 
             {/* <!-- End Instagram Feed  -->

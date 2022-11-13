@@ -5,9 +5,10 @@ import {
     INP_FULLNAME,
     INP_PHONE,
     INP_EMAIL,
+    INP_DISTRICT,
+    INP_WARD,
     INP_ADDRESS,
     INP_CITY,
-    INP_COUNTRY,
     INP_PASSWORD,
     GET_CUSTOMER_DATA,
     CREATE_NEW_CUSTOMER
@@ -21,8 +22,9 @@ const initialState = {
     phoneSignUp: "",
     emailSignUp: "",
     addressSignUp: "",
+    wardSignUp: "",
+    districtSignUp: "",
     citySignUp: "",
-    countrySignUp: "",
     passwordSignUp: "",
     newCustomer: [],
     customerData: []
@@ -66,15 +68,20 @@ const CustomerReducer = (state = initialState, action) => {
                 ...state,
                 addressSignUp: action.payload
             }
+        case INP_WARD: 
+            return {
+                ...state,
+                wardSignUp: action.payload
+            }
+        case INP_DISTRICT:
+            return {
+                ...state,
+                districtSignUp: action.payload
+            }
         case INP_CITY:
             return {
                 ...state,
                 citySignUp: action.payload
-            }
-        case INP_COUNTRY:
-            return {
-                ...state,
-                countrySignUp: action.payload
             }
         case INP_PASSWORD:
             return {

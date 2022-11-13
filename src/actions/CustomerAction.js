@@ -6,8 +6,9 @@ import {
     INP_PHONE,
     INP_EMAIL,
     INP_ADDRESS,
+    INP_WARD,
+    INP_DISTRICT,
     INP_CITY,
-    INP_COUNTRY,
     INP_PASSWORD,
     GET_CUSTOMER_DATA,
     CREATE_NEW_CUSTOMER
@@ -63,6 +64,20 @@ export const inpAdressSignUp = (value) => {
     }
 }
 
+export const inpWardSignUp = (value) => {
+    return {
+        type: INP_WARD,
+        payload: value
+    }
+}
+
+export const inpDistrictSignUp = (value) => {
+    return {
+        type: INP_DISTRICT,
+        payload: value
+    }
+}
+
 export const inpCitySignUp = (value) => {
     return {
         type: INP_CITY,
@@ -70,12 +85,6 @@ export const inpCitySignUp = (value) => {
     }
 }
 
-export const inpCountrySignUp = (value) => {
-    return {
-        type: INP_COUNTRY,
-        payload: value
-    }
-}
 
 export const inpPasswordSignUp = (value) => {
     return {
@@ -93,8 +102,9 @@ export const createNewCus = (dataUser, setAlert, setAlertColor, setTextAlert) =>
             phone: dataUser.phone,
             email: dataUser.email,
             address: dataUser.address,
+            ward: dataUser.ward,
+            district: dataUser.district,
             city: dataUser.city,
-            country: dataUser.country,
             password: dataUser.password,
             orders: [],
         }),

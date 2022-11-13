@@ -1,9 +1,187 @@
+import { async } from "@firebase/util"
+import { useEffect, useState } from "react"
+import { json, useNavigate } from "react-router-dom"
+import { Snackbar, Alert } from "@mui/material"
 import BreadcrumbComponent from "../BreadcrumbComponent/BreadcrumbComponent"
 import FooterComponent from "../FooterComponent/FooterComponent"
 import HeaderComponent from "../HeaderComponent/HeaderComponent"
 
 function CheckoutComponent() {
 
+    const navigate = useNavigate()
+
+    const [payment, setPayment] = useState('')
+    const [shipping, setShipping] = useState('')
+    const [updateData, setUpdateData] = useState(0)
+    const [alert, setAlert] = useState(false);
+    const [textAlert, setTextAlert] = useState("");
+    const [alertColor, setAlertColor] = useState("error");
+
+    const checkout = JSON.parse(localStorage.getItem('checkout'))
+    const user = JSON.parse(localStorage.getItem('user'))
+
+    //Navigate to Product Detail Page
+    const onProductClick = (product) => {
+        navigate(`/shop-detail/${product._id}`)
+    }
+
+    //Payment Selection 
+    const onMomoPayClick = () => {
+        setPayment('Momo')
+    }
+
+    const onZaloPayClick = () => {
+        setPayment('Zalo')
+    }
+
+    const onCashPayClick = () => {
+        setPayment('Cash')
+    }
+
+    //On Close Alert
+    const handleCloseAlert = () => {
+        setAlert(false)
+    }
+
+    //Call API function
+    const createData = async (url, body) => {
+        const response = await fetch(url, body)
+        const data = await response.json()
+        return data
+    }
+
+    //Create Shipping Date based on Shipping Method Selection
+    const shippingDateValue = (today, dayAdd) => {
+        // let today = new Date().toLocaleDateString()
+        let result = new Date(today)
+        result.setDate(result.getDate() + dayAdd);
+        let finalResult = result.toLocaleDateString()
+        return finalResult
+    }
+
+    //Shipping Method Selection
+    const onStandardShipClick = () => {
+        if (!isNaN(checkout.shippingCost)) {
+            const newShippingCost = "Free"
+            let newGrandTotal = checkout.grandTotal - checkout.shippingCost
+            const newCheckout = {
+                ...checkout,
+                shippingCost: newShippingCost,
+                grandTotal: newGrandTotal
+            }
+            localStorage.setItem('checkout', JSON.stringify(newCheckout))
+            setUpdateData(updateData + 1)
+            setShipping('Express Delivery - (2-4 business days)')
+        }
+
+    }
+
+    const onExpressShipClick = () => {
+        const newShippingCost = 20000
+        let newGrandTotal = checkout.grandTotal
+        if (isNaN(checkout.shippingCost)) {
+            newGrandTotal = newGrandTotal + 20000
+        } else {
+            newGrandTotal = newGrandTotal - checkout.shippingCost + 20000
+        }
+        const newCheckout = {
+            ...checkout,
+            shippingCost: newShippingCost,
+            grandTotal: newGrandTotal
+        }
+        localStorage.setItem('checkout', JSON.stringify(newCheckout))
+        setUpdateData(updateData + 1)
+        setShipping('Standard Delivery - (3-7 business days)')
+    }
+
+    const onNextDayShipClick = () => {
+
+        const newShippingCost = 40000
+        let newGrandTotal = checkout.grandTotal
+        if (isNaN(checkout.shippingCost)) {
+            newGrandTotal = newGrandTotal + 40000
+        } else {
+            newGrandTotal = newGrandTotal - checkout.shippingCost + 40000
+        }
+        const newCheckout = {
+            ...checkout,
+            shippingCost: newShippingCost,
+            grandTotal: newGrandTotal
+        }
+        localStorage.setItem('checkout', JSON.stringify(newCheckout))
+        setUpdateData(updateData + 1)
+        setShipping('Next Business day')
+    }
+
+    //On Btn place order click
+    const onBtnPlaceOrderClick = () => {
+
+        let orderDateData = new Date().toLocaleDateString()
+        let shippedDateData = new Date()
+
+        if (checkout.shippingCost == "Free") {
+            shippedDateData = shippingDateValue(orderDateData, 7)
+        } else if (checkout.shippingCost == 20000) {
+            shippedDateData = shippingDateValue(orderDateData, 4)
+        } else {
+            shippedDateData = shippingDateValue(orderDateData, 1)
+        }
+        var orderCheck = {
+            orderDate: orderDateData,
+            shippedDate: shippedDateData,
+            city: user.city,
+            district: user.district,
+            ward: user.ward,
+            address: user.address,
+            buyer: user._id,
+            payment: payment,
+            shipping: shipping,
+            cost: checkout.grandTotal,
+        }
+
+        const orderValidate = validateOrder(orderCheck)
+        if (orderValidate) {
+            const orderNewBody = {
+                method: 'POST',
+                body: JSON.stringify({
+                    orderDate: orderCheck.orderDate,
+                    shippedDate: orderCheck.shippedDate,
+                    city: orderCheck.city,
+                    district: orderCheck.district,
+                    ward: orderCheck.ward,
+                    address: orderCheck.address,
+                    buyer: orderCheck.buyer,
+                    payment: orderCheck.payment,
+                    shipping: orderCheck.shipping,
+                    cost: Number(orderCheck.cost)
+                    
+                }),
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8'
+                }
+
+            }
+            createData('http://localhost:8000/orders', orderNewBody)
+            .then((data) => {
+                console.log(data)
+            })
+        }
+        
+    }
+
+    const validateOrder = (paramOrder) => {
+        if (paramOrder.payment == "") {
+            setAlert(true)
+            setAlertColor("error")
+            setTextAlert("Please select your payment")
+            return false
+        }
+        return true
+    }
+
+    useEffect(() => {
+        const checkout = JSON.parse(localStorage.getItem('checkout'))
+    }, [updateData])
     return (
         <>
             <HeaderComponent></HeaderComponent>
@@ -14,42 +192,6 @@ function CheckoutComponent() {
             <!-- Start Cart  --> */}
             <div className="cart-box-main">
                 <div className="container">
-                    <div className="row new-account-login">
-                        <div className="col-sm-6 col-lg-6 mb-3">
-
-                            <form className="mt-3 collapse review-form-box" id="formLogin">
-                                <div className="form-row">
-                                    <div className="form-group col-md-6">
-                                        <label for="InputEmail" className="mb-0">Email Address</label>
-                                        <input type="email" className="form-control" id="InputEmail" placeholder="Enter Email" /> </div>
-                                    <div className="form-group col-md-6">
-                                        <label for="InputPassword" className="mb-0">Password</label>
-                                        <input type="password" className="form-control" id="InputPassword" placeholder="Password" /> </div>
-                                </div>
-                                <button type="submit" className="btn hvr-hover">Login</button>
-                            </form>
-                        </div>
-                        <div className="col-sm-6 col-lg-6 mb-3">
-
-                            <form className="mt-3 collapse review-form-box" id="formRegister">
-                                <div className="form-row">
-                                    <div className="form-group col-md-6">
-                                        <label for="InputName" className="mb-0">First Name</label>
-                                        <input type="text" className="form-control" id="InputName" placeholder="First Name" /> </div>
-                                    <div className="form-group col-md-6">
-                                        <label for="InputLastname" className="mb-0">Last Name</label>
-                                        <input type="text" className="form-control" id="InputLastname" placeholder="Last Name" /> </div>
-                                    <div className="form-group col-md-6">
-                                        <label for="InputEmail1" className="mb-0">Email Address</label>
-                                        <input type="email" className="form-control" id="InputEmail1" placeholder="Enter Email" /> </div>
-                                    <div className="form-group col-md-6">
-                                        <label for="InputPassword1" className="mb-0">Password</label>
-                                        <input type="password" className="form-control" id="InputPassword1" placeholder="Password" /> </div>
-                                </div>
-                                <button type="submit" className="btn hvr-hover">Register</button>
-                            </form>
-                        </div>
-                    </div>
                     <div className="row">
                         <div className="col-sm-6 col-lg-6 mb-3">
                             <div className="checkout-address">
@@ -57,109 +199,53 @@ function CheckoutComponent() {
                                     <h3>Billing address</h3>
                                 </div>
                                 <form className="needs-validation" novalidate>
-                                    <div className="row">
-                                        <div className="col-md-6 mb-3">
-                                            <label for="firstName">First name *</label>
-                                            <input type="text" className="form-control" id="firstName" placeholder="" value="" required />
-                                            <div className="invalid-feedback"> Valid first name is required. </div>
-                                        </div>
-                                        <div className="col-md-6 mb-3">
-                                            <label for="lastName">Last name *</label>
-                                            <input type="text" className="form-control" id="lastName" placeholder="" value="" required />
-                                            <div className="invalid-feedback"> Valid last name is required. </div>
-                                        </div>
-                                    </div>
                                     <div className="mb-3">
-                                        <label for="username">Username *</label>
+                                        <label for="fullname">Fullname *</label>
                                         <div className="input-group">
-                                            <input type="text" className="form-control" id="username" placeholder="" required />
-                                            <div className="invalid-feedback" style={{ width: "100%" }}> Your username is required. </div>
+                                            <input type="text" className="form-control" id="fullname" placeholder="" value={user.fullName} />
                                         </div>
                                     </div>
                                     <div className="mb-3">
                                         <label for="email">Email Address *</label>
-                                        <input type="email" className="form-control" id="email" placeholder="" />
-                                        <div className="invalid-feedback"> Please enter a valid email address for shipping updates. </div>
+                                        <input type="email" className="form-control" id="email" value={user.email} />
+                                    </div>
+                                    <div className="mb-3">
+                                        <label for="phone">Phone *</label>
+                                        <input type="text" className="form-control" id="phone" value={user.phone} required />
+                                    </div>
+                                    <div className="mb-3">
+                                        <label for="city">City *</label>
+                                        <input type="text" className="form-control" id="city" value={user.city} required />
+                                    </div>
+                                    <div className="mb-3">
+                                        <label for="district">District *</label>
+                                        <input type="text" className="form-control" id="district" value={user.district} required />
+                                    </div>
+                                    <div className="mb-3">
+                                        <label for="ward">Ward *</label>
+                                        <input type="text" className="form-control" id="ward" value={user.ward} required />
                                     </div>
                                     <div className="mb-3">
                                         <label for="address">Address *</label>
-                                        <input type="text" className="form-control" id="address" placeholder="" required />
-                                        <div className="invalid-feedback"> Please enter your shipping address. </div>
-                                    </div>
-                                    <div className="mb-3">
-                                        <label for="address2">Address 2 *</label>
-                                        <input type="text" className="form-control" id="address2" placeholder="" /> </div>
-                                    <div className="row">
-                                        <div className="col-md-5 mb-3">
-                                            <label for="country">Country *</label>
-                                            <select className="wide w-100" id="country">
-                                                <option value="Choose..." data-display="Select">Choose...</option>
-                                                <option value="United States">United States</option>
-                                            </select>
-                                            <div className="invalid-feedback"> Please select a valid country. </div>
-                                        </div>
-                                        <div className="col-md-4 mb-3">
-                                            <label for="state">State *</label>
-                                            <select className="wide w-100" id="state">
-                                                <option data-display="Select">Choose...</option>
-                                                <option>California</option>
-                                            </select>
-                                            <div className="invalid-feedback"> Please provide a valid state. </div>
-                                        </div>
-                                        <div className="col-md-3 mb-3">
-                                            <label for="zip">Zip *</label>
-                                            <input type="text" className="form-control" id="zip" placeholder="" required />
-                                            <div className="invalid-feedback"> Zip code required. </div>
-                                        </div>
-                                    </div>
-                                    <hr className="mb-4" />
-                                    <div className="custom-control custom-checkbox">
-                                        <input type="checkbox" className="custom-control-input" id="same-address" />
-                                        <label className="custom-control-label" for="same-address">Shipping address is the same as my billing address</label>
-                                    </div>
-                                    <div className="custom-control custom-checkbox">
-                                        <input type="checkbox" className="custom-control-input" id="save-info" />
-                                        <label className="custom-control-label" for="save-info">Save this information for next time</label>
+                                        <input type="text" className="form-control" id="address" value={user.address} required />
                                     </div>
                                     <hr className="mb-4" />
                                     <div className="title"> <span>Payment</span> </div>
                                     <div className="d-block my-3">
                                         <div className="custom-control custom-radio">
-                                            <input id="credit" name="paymentMethod" type="radio" className="custom-control-input" checked required />
-                                            <label className="custom-control-label" for="credit">Credit card</label>
+                                            <input id="Momo" name="paymentMethod" type="radio" className="custom-control-input" required onChange={onMomoPayClick} />
+                                            <label className="custom-control-label" for="Momo">Momo</label>
                                         </div>
                                         <div className="custom-control custom-radio">
-                                            <input id="debit" name="paymentMethod" type="radio" className="custom-control-input" required />
-                                            <label className="custom-control-label" for="debit">Debit card</label>
+                                            <input id="Zalopay" name="paymentMethod" type="radio" className="custom-control-input" required onChange={onZaloPayClick} />
+                                            <label className="custom-control-label" for="Zalopay">Zalo Pay</label>
                                         </div>
                                         <div className="custom-control custom-radio">
-                                            <input id="paypal" name="paymentMethod" type="radio" className="custom-control-input" required />
-                                            <label className="custom-control-label" for="paypal">Paypal</label>
+                                            <input id="Cash" name="paymentMethod" type="radio" className="custom-control-input" required onChange={onCashPayClick} />
+                                            <label className="custom-control-label" for="Cash">COD</label>
                                         </div>
                                     </div>
                                     <div className="row">
-                                        <div className="col-md-6 mb-3">
-                                            <label for="cc-name">Name on card</label>
-                                            <input type="text" className="form-control" id="cc-name" placeholder="" required /> <small className="text-muted">Full name as displayed on card</small>
-                                            <div className="invalid-feedback"> Name on card is required </div>
-                                        </div>
-                                        <div className="col-md-6 mb-3">
-                                            <label for="cc-number">Credit card number</label>
-                                            <input type="text" className="form-control" id="cc-number" placeholder="" required />
-                                            <div className="invalid-feedback"> Credit card number is required </div>
-                                        </div>
-                                    </div>
-                                    <div className="row">
-                                        <div className="col-md-3 mb-3">
-                                            <label for="cc-expiration">Expiration</label>
-                                            <input type="text" className="form-control" id="cc-expiration" placeholder="" required />
-                                            <div className="invalid-feedback"> Expiration date required </div>
-                                        </div>
-                                        <div className="col-md-3 mb-3">
-                                            <label for="cc-expiration">CVV</label>
-                                            <input type="text" className="form-control" id="cc-cvv" placeholder="" required />
-                                            <div className="invalid-feedback"> Security code required </div>
-                                        </div>
                                         <div className="col-md-6 mb-3">
                                             <div className="payment-icon">
                                                 <ul>
@@ -185,16 +271,16 @@ function CheckoutComponent() {
                                         </div>
                                         <div className="mb-4">
                                             <div className="custom-control custom-radio">
-                                                <input id="shippingOption1" name="shipping-option" className="custom-control-input" checked="checked" type="radio" />
+                                                <input id="shippingOption1" name="shipping-option" className="custom-control-input" type="radio" onChange={onStandardShipClick} />
                                                 <label className="custom-control-label" for="shippingOption1">Standard Delivery</label> <span className="float-right font-weight-bold">FREE</span> </div>
                                             <div className="ml-4 mb-2 small">(3-7 business days)</div>
                                             <div className="custom-control custom-radio">
-                                                <input id="shippingOption2" name="shipping-option" className="custom-control-input" type="radio" />
-                                                <label className="custom-control-label" for="shippingOption2">Express Delivery</label> <span className="float-right font-weight-bold">$10.00</span> </div>
+                                                <input id="shippingOption2" name="shipping-option" className="custom-control-input" type="radio" onChange={onExpressShipClick} />
+                                                <label className="custom-control-label" for="shippingOption2">Express Delivery</label> <span className="float-right font-weight-bold">20000 VNĐ</span> </div>
                                             <div className="ml-4 mb-2 small">(2-4 business days)</div>
                                             <div className="custom-control custom-radio">
-                                                <input id="shippingOption3" name="shipping-option" className="custom-control-input" type="radio" />
-                                                <label className="custom-control-label" for="shippingOption3">Next Business day</label> <span className="float-right font-weight-bold">$20.00</span> </div>
+                                                <input id="shippingOption3" name="shipping-option" className="custom-control-input" type="radio" onChange={onNextDayShipClick} />
+                                                <label className="custom-control-label" for="shippingOption3">Next Business day</label> <span className="float-right font-weight-bold">40000 VNĐ</span> </div>
                                         </div>
                                     </div>
                                 </div>
@@ -204,21 +290,15 @@ function CheckoutComponent() {
                                             <h3>Shopping cart</h3>
                                         </div>
                                         <div className="rounded p-2 bg-light">
-                                            <div className="media mb-2 border-bottom">
-                                                <div className="media-body"> <a href="detail.html"> Lorem ipsum dolor sit amet</a>
-                                                    <div className="small text-muted">Price: $80.00 <span className="mx-2">|</span> Qty: 1 <span className="mx-2">|</span> Subtotal: $80.00</div>
-                                                </div>
-                                            </div>
-                                            <div className="media mb-2 border-bottom">
-                                                <div className="media-body"> <a href="detail.html"> Lorem ipsum dolor sit amet</a>
-                                                    <div className="small text-muted">Price: $60.00 <span className="mx-2">|</span> Qty: 1 <span className="mx-2">|</span> Subtotal: $60.00</div>
-                                                </div>
-                                            </div>
-                                            <div className="media mb-2">
-                                                <div className="media-body"> <a href="detail.html"> Lorem ipsum dolor sit amet</a>
-                                                    <div className="small text-muted">Price: $40.00 <span className="mx-2">|</span> Qty: 1 <span className="mx-2">|</span> Subtotal: $40.00</div>
-                                                </div>
-                                            </div>
+                                            {checkout.products.map((product, index) => {
+                                                return (
+                                                    <div className="media mb-2 border-bottom" key={index}>
+                                                        <div className="media-body"> <a href="#" onClick={() => onProductClick(product)}> {product.name}</a>
+                                                            <div className="small text-muted">Price: {product.promotionPrice} VNĐ<span className="mx-2">|</span> Qty: {product.qtyBuy} <span className="mx-2">|</span> Subtotal: {Number(product.promotionPrice) * Number(product.qtyBuy)} VNĐ</div>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            })}
                                         </div>
                                     </div>
                                 </div>
@@ -234,38 +314,46 @@ function CheckoutComponent() {
                                         <hr className="my-1" />
                                         <div className="d-flex">
                                             <h4>Sub Total</h4>
-                                            <div className="ml-auto font-weight-bold"> $ 440 </div>
+                                            <div className="ml-auto font-weight-bold"> {checkout.subTotal} VNĐ</div>
                                         </div>
                                         <div className="d-flex">
                                             <h4>Discount</h4>
-                                            <div className="ml-auto font-weight-bold"> $ 40 </div>
+                                            <div className="ml-auto font-weight-bold"> {checkout.discount} VNĐ</div>
                                         </div>
                                         <hr className="my-1" />
                                         <div className="d-flex">
                                             <h4>Coupon Discount</h4>
-                                            <div className="ml-auto font-weight-bold"> $ 10 </div>
+                                            <div className="ml-auto font-weight-bold"> {checkout.couponDiscount} VNĐ</div>
                                         </div>
                                         <div className="d-flex">
                                             <h4>Tax</h4>
-                                            <div className="ml-auto font-weight-bold"> $ 2 </div>
+                                            <div className="ml-auto font-weight-bold"> {checkout.tax} VNĐ</div>
                                         </div>
                                         <div className="d-flex">
                                             <h4>Shipping Cost</h4>
-                                            <div className="ml-auto font-weight-bold"> Free </div>
+                                            <div className="ml-auto font-weight-bold"> {checkout.shippingCost} VNĐ</div>
                                         </div>
                                         <hr />
                                         <div className="d-flex gr-total">
                                             <h5>Grand Total</h5>
-                                            <div className="ml-auto h5"> $ 388 </div>
+                                            <div className="ml-auto h5"> {checkout.grandTotal} VNĐ</div>
                                         </div>
                                         <hr /> </div>
                                 </div>
-                                <div className="col-12 d-flex shopping-box"> <a href="checkout.html" className="ml-auto btn hvr-hover">Place Order</a> </div>
+                                <div className="col-12 d-flex"><a href="#" className="ml-auto btn btn-warning hvr-hover" style={{ color: "white", fontWeight: "bold" }} onClick={onBtnPlaceOrderClick}>Place Order</a> </div>
                             </div>
                         </div>
                     </div>
 
                 </div>
+
+                <Snackbar
+                    open={alert}
+                    autoHideDuration={5000}
+                    onClose={handleCloseAlert}
+                >
+                    <Alert onClose={handleCloseAlert} severity={alertColor}>{textAlert}</Alert>
+                </Snackbar>
             </div>
 
             {/* <!-- End Instagram Feed  -->

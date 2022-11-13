@@ -1,14 +1,16 @@
 import { Snackbar, Alert } from "@mui/material";
 import { Button, Col, Row, Input } from "reactstrap"
 import "./LoginForm.css"
-import { GoogleAuthProvider, signInWithPopup} from "firebase/auth";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
 import auth from "../../firebase";
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
-import { createNewCus, getCusData, GoogleLogin, inpAdressSignUp, inpCitySignUp, inpCountrySignUp, inpEmailLogin, inpEmailSignUp, inpFullNameSignUp, inpPasswordLogin, inpPasswordSignUp, inpPhoneSignUp } from "../../actions/CustomerAction";
+import { createNewCus, getCusData, GoogleLogin, inpAdressSignUp, inpCitySignUp, inpCountrySignUp, inpDistrictSignUp, inpEmailLogin, inpEmailSignUp, inpFullNameSignUp, inpPasswordLogin, inpPasswordSignUp, inpPhoneSignUp, inpWardSignUp } from "../../actions/CustomerAction";
 import HeaderComponent from "../HeaderComponent/HeaderComponent";
 import { useNavigate } from "react-router-dom";
 import FooterComponent from "../FooterComponent/FooterComponent";
+import { async } from "@firebase/util";
+import { AssistWalkerOutlined } from "@mui/icons-material";
 const provider = new GoogleAuthProvider();
 
 
@@ -21,8 +23,13 @@ function LoginForm() {
     const [alert, setAlert] = useState(false);
     const [textAlert, setTextAlert] = useState("");
     const [alertColor, setAlertColor] = useState("error");
+    const [addressData, setAddressData] = useState([])
+    const [districtData, setDistrictData] = useState([])
+    const [wardData, setWardData] = useState([])
     const [btnLoginClick, setBtnLoginClick] = useState(false)
     const checkout = JSON.parse(localStorage.getItem('checkout'))
+
+    const addressAPI = "https://raw.githubusercontent.com/sunshine-tech/VietnamProvinces/master/vietnam_provinces/data/nested-divisions.json"
 
     const { userGoogle,
         passwordLogin,
@@ -31,12 +38,14 @@ function LoginForm() {
         phoneSignUp,
         emailSignUp,
         addressSignUp,
+        districtSignUp,
+        wardSignUp,
         citySignUp,
-        countrySignUp,
         passwordSignUp,
         customerData,
         newCustomer } = useSelector((reduxData) => reduxData.CustomerReducer)
 
+    //Customer select Sign Up or Login    
     const onBtnSignUp = () => {
         setLogin(false)
     }
@@ -45,10 +54,12 @@ function LoginForm() {
         setLogin(true)
     }
 
+    //Close Alert Action
     const handleCloseAlert = () => {
         setAlert(false)
     }
 
+    //Assign Value Login for Redux (email, password) when customer input
     const onEmailLogin = (event) => {
         dispatch(inpEmailLogin(event.target.value))
     }
@@ -57,6 +68,7 @@ function LoginForm() {
         dispatch(inpPasswordLogin(event.target.value))
     }
 
+    //Assign Value Sign Up for Redux (fullName, phone, email, address, city, country, password) when customer input
     const onFullNameSignUp = (event) => {
         console.log(event)
         dispatch(inpFullNameSignUp(event.target.value))
@@ -70,72 +82,114 @@ function LoginForm() {
         dispatch(inpEmailSignUp(event.target.value))
     }
 
+    const onCitySignUp = (event) => {
+        let cityName = event.target.value
+        dispatch(inpCitySignUp(event.target.value))
+        if (cityName) {
+            const districtData = addressData.filter((value, index) => {
+                return value.name == cityName
+            })
+            setDistrictData(districtData[0].districts)
+        }
+
+    }
+
+    const onDistrictSignUp = (event) => {
+        let districtName = event.target.value
+        dispatch(inpDistrictSignUp(event.target.value))
+        if (districtName) {
+            const wardData = districtData.filter((value,index) => {
+                return value.name == districtName
+            })
+            setWardData(wardData[0].wards)
+        }
+    }
+
+    const onWardSignUp = (event) => {
+        dispatch(inpWardSignUp(event.target.value))
+    }
+
     const onAddressSignUp = (event) => {
         dispatch(inpAdressSignUp(event.target.value))
-    }
-
-    const onCitySignUp = (event) => {
-        dispatch(inpCitySignUp(event.target.value))
-    }
-
-    const onCountrySignUp = (event) => {
-        dispatch(inpCountrySignUp(event.target.value))
     }
 
     const onPasswordSignUp = (event) => {
         dispatch(inpPasswordSignUp(event.target.value))
     }
 
+    //get Adress API 
+    const getAdressAPI = async (url) => {
+        const response = await fetch(url)
+        const data = await response.json()
+        setAddressData(data)
+        return data
+    }
+
+    //Customer enter the login button after filling all information
     const onBtnConfirmLoginClick = () => {
         setBtnLoginClick(true)
+
+        //Find exact customer in the customer database
         let LoginData = customerData.filter((value, index) => {
             return value.email === emailLogin && value.password === passwordLogin
         })
 
+        //If emailLogin && passwordLogin are right then save the user data in Localstorage
         if (LoginData.length > 0) {
             setAlert(true)
             setAlertColor("success")
             setTextAlert("Login Successfully!")
-            localStorage.setItem("user",JSON.stringify(LoginData[0]) )
+            localStorage.setItem("user", JSON.stringify(LoginData[0]))
+
+            //If there are Checkout variable stored in Localstorage, naviage to checkout page. If not, navigate to home page
             if (checkout) {
                 navigate('/checkout')
             } else {
                 navigate('/home')
             }
         } else {
+
             setAlert(false)
             setAlertColor("error")
             setTextAlert("Your email or your password information is incorrect! Please check again!")
         }
     }
 
+    //Customer enter the Sign Up button after filling all information
     const onBtnConfirmSignUpClick = () => {
+        // B1: create a variable 
         var newCustomerCheck = {
             fullName: fullNameSignUp,
             phone: Number(phoneSignUp),
             email: emailSignUp,
             address: addressSignUp,
+            district: districtSignUp,
+            ward: wardSignUp,
             city: citySignUp,
-            country: countrySignUp,
             password: passwordSignUp
         }
+        //B2 validate variable
         const validate = validateNewCustomer(newCustomerCheck)
+        //B3 if variable is valid, then assign variable to newCustomerData and dispatch newCustomerData to the Customer database
         if (validate) {
             const newCustomerData = {
                 fullName: newCustomerCheck.fullName,
                 phone: newCustomerCheck.phone,
                 email: newCustomerCheck.email,
                 address: newCustomerCheck.address,
+                district: newCustomerCheck.district,
+                ward: newCustomerCheck.ward,
                 city: newCustomerCheck.city,
-                country: newCustomerCheck.country,
                 password: newCustomerCheck.password,
             }
             dispatch(createNewCus(newCustomerData, setAlert, setAlertColor, setTextAlert))
 
         }
-        
+
     }
 
+
+    //Validate Sign Up information 
     const validateNewCustomer = (paramNewCustomer) => {
         const checkNewCustomerEmail = customerData.some(customer =>
             customer.email === paramNewCustomer.email
@@ -173,20 +227,25 @@ function LoginForm() {
             setAlertColor("error")
             setTextAlert("Please enter your Email")
             return false
-        } else if (paramNewCustomer.address === "") {
-            setAlert(true)
-            setAlertColor("error")
-            setTextAlert("Please enter your Address")
-            return false
-        } else if (paramNewCustomer.city === "") {
+        }  else if (paramNewCustomer.city === "") {
             setAlert(true)
             setAlertColor("error")
             setTextAlert("Please enter your City")
             return false
-        } else if (paramNewCustomer.country === "") {
+        } else if (paramNewCustomer.district === "") {
             setAlert(true)
             setAlertColor("error")
-            setTextAlert("Please enter your Country")
+            setTextAlert("Please enter your District")
+            return false
+        } else if (paramNewCustomer.ward === "") {
+            setAlert(true)
+            setAlertColor("error")
+            setTextAlert("Please enter your Ward")
+            return false
+        } else if (paramNewCustomer.address === "") {
+            setAlert(true)
+            setAlertColor("error")
+            setTextAlert("Please enter your Address")
             return false
         } else if (!passRegex.test(paramNewCustomer.password)) {
             setAlert(true)
@@ -202,11 +261,14 @@ function LoginForm() {
         return true
     }
 
+    //Check if the email from Logging by Google is different from the other email in the Customerdatabase
     const checkNewCustomerHandler = () => {
+        //Find exact customer in the customer database
         const checkNewCustomerEmail = customerData.some(customer =>
             customer.email === userGoogle.email
         )
 
+        //Check if there are existed email. Find the exact customer in the Customer database and save it to the localstorage user 
         if (checkNewCustomerEmail) {
             for (let i = 0; i < customerData.length; i++) {
                 if (customerData[i].email == userGoogle.email) {
@@ -218,7 +280,8 @@ function LoginForm() {
                     }
                 }
             }
-        } else if (!checkNewCustomerEmail && userGoogle != null) {
+        } //Check if there aren't existed email. Then create a new customer in the Customer database based on two info (fullName and email)
+        else if (!checkNewCustomerEmail && userGoogle != null) {
             var newCustomerByMail = {
                 fullName: userGoogle.displayName,
                 email: userGoogle.email
@@ -228,15 +291,16 @@ function LoginForm() {
         }
     }
 
+
     useEffect(() => {
+        getAdressAPI(addressAPI)
         dispatch(getCusData())
         if (userGoogle) {
             checkNewCustomerHandler()
         }
     }, [userGoogle, setBtnLoginClick])
 
-    console.log(userGoogle)
-    console.log(customerData)
+
     const loginGoogle = () => {
         signInWithPopup(auth, provider)
             .then((result) => {
@@ -311,13 +375,38 @@ function LoginForm() {
                                                         <Input placeholder="Email Address*" className="input" onChange={onEmailSignUp}></Input>
                                                     </Row>
                                                     <Row>
+                                                        <select className="form-control" onChange={onCitySignUp} style={{ marginBottom: "30px" }}>
+                                                            <option defaultValue="" >City/Province*</option>
+                                                            {
+                                                                addressData.map((element, index) => {
+                                                                    return <option key={index} value={element.name}>{element.name}</option>
+                                                                })
+                                                            }
+                                                        </select>
+                                                    </Row>
+                                                    <Row>
+                                                        <select className="form-control" onChange={onDistrictSignUp}  style={{ marginBottom: "30px" }}>
+                                                            <option defaultValue="" >District*</option>
+                                                            {
+                                                                districtData.map((element, index) => {
+                                                                    return <option key={index} value={element.name}>{element.name}</option>
+                                                                })
+                                                            }
+                                                        </select>
+                                                    </Row>
+                                                    <Row>
+                                                        <select className="form-control" onChange={onWardSignUp}  style={{ marginBottom: "30px" }}>
+                                                            <option defaultValue="" >Ward*</option>
+                                                            {
+                                                                wardData.map((element, index) => {
+                                                                    return <option key={index} value={element.name}>{element.name}</option>
+                                                                })
+                                                            }
+                                                        </select>
+                                                    </Row>
+                                                    
+                                                    <Row>
                                                         <Input placeholder="Address*" className="input" onChange={onAddressSignUp}></Input>
-                                                    </Row>
-                                                    <Row>
-                                                        <Input placeholder="City*" className="input" onChange={onCitySignUp}></Input>
-                                                    </Row>
-                                                    <Row>
-                                                        <Input placeholder="Country*" className="input" onChange={onCountrySignUp}></Input>
                                                     </Row>
                                                     <Row>
                                                         <Input placeholder="Set A Password*" className="input" onChange={onPasswordSignUp}></Input>

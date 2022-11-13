@@ -8,8 +8,9 @@ export const INP_FULLNAME = "INP_FULLNAME";
 export const INP_PHONE = "INP_PHONE";
 export const INP_EMAIL = "INP_EMAIL";
 export const INP_ADDRESS = "INP_ADDRESS";
+export const INP_WARD = "INP_WARD"
+export const INP_DISTRICT = "INP_DISTRICT"
 export const INP_CITY = "INP_CITY";
-export const INP_COUNTRY ="INP_COUNTRY";
 export const INP_PASSWORD = "INP_PASSWORD"
 
 

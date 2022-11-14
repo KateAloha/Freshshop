@@ -12,10 +12,13 @@ import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined'
 import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined'
 import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined'
 import ForwardOutlinedIcon from '@mui/icons-material/ForwardOutlined';
+import { useDispatch, useSelector } from "react-redux"
+import { getCusData } from "../../actions/CustomerAction"
 
 function CheckoutComponent() {
 
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     const style = {
         position: 'absolute',
@@ -37,6 +40,7 @@ function CheckoutComponent() {
     const [textAlert, setTextAlert] = useState("");
     const [alertColor, setAlertColor] = useState("error");
     const [openModal, setOpenModal] = useState(false)
+    const {customerData} = useSelector((reduxData) =>  reduxData.CustomerReducer)
 
     const checkout = JSON.parse(localStorage.getItem('checkout'))
     const user = JSON.parse(localStorage.getItem('user'))
@@ -222,6 +226,7 @@ function CheckoutComponent() {
                     setAlertColor("success")
                     setOpenModal(true)
                     localStorage.setItem('allCart', JSON.stringify([]))
+                    
 
                 }).catch((error) => {
                     setAlert(true);
@@ -242,6 +247,7 @@ function CheckoutComponent() {
         return true
     }
 
+    
     useEffect(() => {
         const checkout = JSON.parse(localStorage.getItem('checkout'))
     }, [updateData])

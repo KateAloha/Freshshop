@@ -142,7 +142,7 @@ function LoginForm() {
             localStorage.setItem("user", JSON.stringify(LoginData[0]))
 
             //If there are Checkout variable stored in Localstorage, naviage to checkout page. If not, navigate to home page
-            if (checkout) {
+            if (checkout.length > 0) {
                 navigate('/checkout')
             } else {
                 navigate('/home')

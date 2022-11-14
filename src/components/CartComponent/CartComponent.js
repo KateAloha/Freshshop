@@ -69,7 +69,7 @@ function CartComponent() {
             })
 
             let taxTotal = productTotal * 0.1
-            let grandTotalCost = productTotal - discountTotal - couponTotal - taxTotal
+            let grandTotalCost = productTotal - discountTotal - couponTotal + taxTotal
 
             setSubTotal(productTotal)
             setDiscount(discountTotal)

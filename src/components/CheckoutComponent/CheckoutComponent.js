@@ -40,7 +40,6 @@ function CheckoutComponent() {
     const [textAlert, setTextAlert] = useState("");
     const [alertColor, setAlertColor] = useState("error");
     const [openModal, setOpenModal] = useState(false)
-    const {customerData} = useSelector((reduxData) =>  reduxData.CustomerReducer)
 
     const checkout = JSON.parse(localStorage.getItem('checkout'))
     const user = JSON.parse(localStorage.getItem('user'))

@@ -25,7 +25,8 @@ function LoginForm() {
     const [districtData, setDistrictData] = useState([])
     const [wardData, setWardData] = useState([])
     const [btnLoginClick, setBtnLoginClick] = useState(false)
-
+    const [updateData, setUpdateData] = useState(0)
+ 
     const addressAPI = "https://raw.githubusercontent.com/sunshine-tech/VietnamProvinces/master/vietnam_provinces/data/nested-divisions.json"
 
     const { userGoogle,
@@ -180,6 +181,7 @@ function LoginForm() {
                 password: newCustomerCheck.password,
             }
             dispatch(createNewCus(newCustomerData, setAlert, setAlertColor, setTextAlert))
+            setUpdateData(updateData + 1)
 
         }
 
@@ -295,7 +297,7 @@ function LoginForm() {
         if (userGoogle) {
             checkNewCustomerHandler()
         }
-    }, [userGoogle, setBtnLoginClick])
+    }, [userGoogle, setBtnLoginClick, updateData])
 
 
     const loginGoogle = () => {

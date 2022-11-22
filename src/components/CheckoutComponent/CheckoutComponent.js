@@ -186,7 +186,7 @@ function CheckoutComponent() {
                 }
 
             }
-            createData('http://localhost:8000/orders', orderNewBody)
+            createData('https://freshop-backendcloud.herokuapp.com/orders', orderNewBody)
                 .then((orderData) => {
 
                     //Create OrderDetail variable
@@ -206,7 +206,7 @@ function CheckoutComponent() {
                             }
 
                         }
-                        createData('http://localhost:8000/order-details', orderDetailBody)
+                        createData('https://freshop-backendcloud.herokuapp.com/order-details', orderDetailBody)
                             .then((orderDataDetail) => {
                             }).catch((error) => {
                                 setAlert(true);

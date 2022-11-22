@@ -11,7 +11,7 @@ export const getAllListData = () => async dispatch => {
         redirect: 'follow'
     }
     try {
-        const response = await fetch(`http://localhost:8000/productRouters`, requestOptions);
+        const response = await fetch(`https://freshop-backendcloud.herokuapp.com/productRouters`, requestOptions);
         const data = await response.json();
         return dispatch({
             type: GET_DATA_PRODUCT,
@@ -30,14 +30,14 @@ export const FilterAction = (filterMaxPrice, filterMinPrice, filterName , filter
     }
     try {
         if (filterMaxPrice === 1000000000 && filterMinPrice === 0 && filterName === "" && filterCategories === "") {
-            const response = await fetch(`http://localhost:8000/productRouters`, requestOptions);
+            const response = await fetch(`https://freshop-backendcloud.herokuapp.com/productRouters`, requestOptions);
             const data = await response.json();
             return dispatch({
                 type: GET_DATA_PRODUCT,
                 payload: data.productList
             });
         } else if (filterMaxPrice !== 1000000000 || filterMinPrice !== 0 || filterName !== "" || filterCategories !== "") {
-            const response = await fetch(`http://localhost:8000/productRouters/?filterMaxPrice=${filterMaxPrice}&filterMinPrice=${filterMinPrice}&filterName=${filterName}&filterCategories=${filterCategories}`, requestOptions);
+            const response = await fetch(`https://freshop-backendcloud.herokuapp.com/productRouters/?filterMaxPrice=${filterMaxPrice}&filterMinPrice=${filterMinPrice}&filterName=${filterName}&filterCategories=${filterCategories}`, requestOptions);
             const data = await response.json();
             return dispatch({
                 type: FILTER_PRODUCT,

@@ -6,7 +6,7 @@ export const ProductDetailAction = (paramId) => async dispatch => {
         redirect: 'follow'
     }
     try {
-        const response = await fetch(`http://localhost:8000/productRouters/${paramId}`, requestOptions);
+        const response = await fetch(`https://freshop-backendcloud.herokuapp.com/productRouters/${paramId}`, requestOptions);
         const data = await response.json();
         return dispatch({
             type: GET_DATA_PRODUCT_BY_ID,

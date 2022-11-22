@@ -114,7 +114,7 @@ export const createNewCus = (dataUser, setAlert, setAlertColor, setTextAlert) =>
 
     }
     try {
-        const response = await fetch(`http://localhost:8000/customers`, requestOptions);
+        const response = await fetch(`https://freshop-backendcloud.herokuapp.com/customers`, requestOptions);
         const data = await response.json();
         console.log(data)
         setAlert(true)
@@ -139,7 +139,7 @@ export const getCusData = () => async dispatch => {
         redirect: 'follow'
     }
     try {
-        const response = await fetch(`http://localhost:8000/customers`, requestOptions);
+        const response = await fetch(`https://freshop-backendcloud.herokuapp.com/customers`, requestOptions);
         const data = await response.json();
         return dispatch({
             type: GET_CUSTOMER_DATA,

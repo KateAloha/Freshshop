@@ -4,9 +4,7 @@ import BreadcrumbComponent from "../BreadcrumbComponent/BreadcrumbComponent";
 import RemoveCircleIcon from '@mui/icons-material/RemoveCircle';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { useEffect, useState } from "react";
-import emptyCart from "../../assets/images/empty-cart.png"
 import RemoveShoppingCartIcon from '@mui/icons-material/RemoveShoppingCart';
-import { useNavigate } from "react-router-dom";
 
 
 function CartComponent() {

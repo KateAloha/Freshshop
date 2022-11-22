@@ -243,12 +243,12 @@ function CheckoutComponent() {
 
     const onGoHomeClick = () =>{
         navigate('/')
-        localStorage.setItem('checkout', JSON.stringify([]))
+        localStorage.setItem('checkout', null)
     }
 
     const onViewOrderClick = () => {
         navigate("/order-history")
-        localStorage.setItem('checkout', JSON.stringify([]))
+        localStorage.setItem('checkout', null)
     }
 
     

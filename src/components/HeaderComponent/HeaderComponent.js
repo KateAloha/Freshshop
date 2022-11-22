@@ -8,14 +8,16 @@ import { GoogleLogin } from "../../actions/CustomerAction";
 import { blueGrey, red } from "@mui/material/colors";
 
 function HeaderComponent() {
-    const dispatch = useDispatch()
 
+    const dispatch = useDispatch()
+    
     const { userGoogle } = useSelector((reduxData) => reduxData.CustomerReducer)
     const user = JSON.parse(localStorage.getItem("user"))
-    const allCart = JSON.parse(localStorage.getItem("allCart"))
+    const allCart = JSON.parse(localStorage.getItem('allCart'))
 
 
     useEffect(() => {
+        
         onAuthStateChanged(auth, (result) => {
             if (result) {
                 dispatch(GoogleLogin(result));
@@ -120,8 +122,8 @@ function HeaderComponent() {
                                 <li className="side-menu">
                                     <a href="/cart">
                                         <i className="fa fa-shopping-bag"></i>
-                                        <span className="badge" style={{ color: "red" }}> {allCart && allCart.length > 0 ? allCart.length : 0}</span>
-                                        <p >My Cart </p>
+                                        <span className="badge" style={{ color: "red" }}>{allCart ? allCart.length : 0}</span>
+                                        <p >My Cart  </p>
                                     </a>
                                 </li>
                             </ul>

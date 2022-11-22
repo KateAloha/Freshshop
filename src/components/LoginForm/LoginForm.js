@@ -25,8 +25,6 @@ function LoginForm() {
     const [districtData, setDistrictData] = useState([])
     const [wardData, setWardData] = useState([])
     const [btnLoginClick, setBtnLoginClick] = useState(false)
-    const [checkout, setCheckout] = useState([])
-    // const checkout = JSON.parse(localStorage.getItem('checkout'))
 
     const addressAPI = "https://raw.githubusercontent.com/sunshine-tech/VietnamProvinces/master/vietnam_provinces/data/nested-divisions.json"
 
@@ -141,7 +139,7 @@ function LoginForm() {
             localStorage.setItem("user", JSON.stringify(LoginData[0]))
 
             //If there are Checkout variable stored in Localstorage, naviage to checkout page. If not, navigate to home page
-            if (checkout.length > 0 ) {
+            if (JSON.parse(localStorage.getItem('checkout')) ) {
                 navigate('/checkout')
             } else {
                 navigate('/home')
@@ -272,7 +270,7 @@ function LoginForm() {
             for (let i = 0; i < customerData.length; i++) {
                 if (customerData[i].email == userGoogle.email) {
                     localStorage.setItem("user", JSON.stringify(customerData[i]))
-                    if (checkout.length > 0) {
+                    if (JSON.parse(localStorage.getItem('checkout'))) {
                         navigate('/checkout')
                     } else {
                         navigate('/home')
@@ -296,11 +294,6 @@ function LoginForm() {
         dispatch(getCusData())
         if (userGoogle) {
             checkNewCustomerHandler()
-        }
-        if (localStorage.getItem('checkout')) {
-            localStorage.setItem("checkout", JSON.stringify([]))
-            let checkoutTem = JSON.parse(localStorage.getItem('checkout'))
-            setCheckout(checkoutTem) 
         }
     }, [userGoogle, setBtnLoginClick])
 

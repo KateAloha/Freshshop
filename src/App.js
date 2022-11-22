@@ -11,8 +11,7 @@ import LoginForm from "./components/LoginForm/LoginForm";
 import MyAccountComponent from "./components/MyAccountComponent/MyAccountComponent";
 import ShopDetailComponent from "./components/ShopDetailComponent/ShopDetailComponent";
 import ProductList from "./components/ProductListComponent/ProductListComponent.js";
-import OrderHistory from "./components/OrderHistoryComponent.js/OrderHistoryComponent";
-import OrderHistoryDetail from "./components/OrderHistoryComponent.js/OrderHistoryDetailComponent";
+
 
 function App() {
   return (
@@ -27,8 +26,6 @@ function App() {
         <Route exact path="/my-account" element={<MyAccountComponent></MyAccountComponent>}></Route>
         <Route exact path="/shop-detail/:paramId" element={<ShopDetailComponent></ShopDetailComponent>}></Route>
         <Route exact path="/product-list" element={<ProductList></ProductList>}></Route>
-        <Route exact path="/order-history" element={<OrderHistory></OrderHistory>}></Route>
-        <Route exact path="/order-history/:paramId" element={<OrderHistoryDetail></OrderHistoryDetail>}></Route>
         <Route path="*" element={<HomePageComponent></HomePageComponent>}></Route>
         <Route exact path="/login" element={<LoginForm></LoginForm>}></Route>
         <Route exact path="/header" element={<HeaderComponent></HeaderComponent>}></Route>

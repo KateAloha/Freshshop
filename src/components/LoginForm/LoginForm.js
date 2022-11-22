@@ -9,8 +9,6 @@ import { createNewCus, getCusData, GoogleLogin, inpAdressSignUp, inpCitySignUp, 
 import HeaderComponent from "../HeaderComponent/HeaderComponent";
 import { useNavigate } from "react-router-dom";
 import FooterComponent from "../FooterComponent/FooterComponent";
-import { async } from "@firebase/util";
-import { AssistWalkerOutlined } from "@mui/icons-material";
 const provider = new GoogleAuthProvider();
 
 
@@ -27,7 +25,8 @@ function LoginForm() {
     const [districtData, setDistrictData] = useState([])
     const [wardData, setWardData] = useState([])
     const [btnLoginClick, setBtnLoginClick] = useState(false)
-    const checkout = JSON.parse(localStorage.getItem('checkout'))
+    const [checkout, setCheckout] = useState([])
+    // const checkout = JSON.parse(localStorage.getItem('checkout'))
 
     const addressAPI = "https://raw.githubusercontent.com/sunshine-tech/VietnamProvinces/master/vietnam_provinces/data/nested-divisions.json"
 
@@ -297,6 +296,11 @@ function LoginForm() {
         dispatch(getCusData())
         if (userGoogle) {
             checkNewCustomerHandler()
+        }
+        if (localStorage.getItem('checkout')) {
+            localStorage.setItem("checkout", JSON.stringify([]))
+            let checkoutTem = JSON.parse(localStorage.getItem('checkout'))
+            setCheckout(checkoutTem) 
         }
     }, [userGoogle, setBtnLoginClick])
 

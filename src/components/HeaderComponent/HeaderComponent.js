@@ -50,14 +50,14 @@ function HeaderComponent() {
                                         <>
                                             <li><a href="/my-account"><i className="fa fa-user s_color"></i> {user.fullName.split(" ")[0]}</a></li>
                                             <li><a href="/login" onClick={logoutGoogle}> Log Out</a></li>
-                                            <li><a href="#"><i class="fas fa-location-arrow"></i> Our location</a></li>
-                                            <li><a href="#"><i class="fas fa-headset"></i> Contact Us</a></li>
+                                            <li><a href="#"><i className="fas fa-location-arrow"></i> Our location</a></li>
+                                            <li><a href="#"><i className="fas fa-headset"></i> Contact Us</a></li>
                                         </>
                                         :
                                         <>
                                             <li><a href="/login"><i className="fa fa-user s_color"></i> Login</a></li>
-                                            <li><a href="#"><i class="fas fa-location-arrow"></i> Our location</a></li>
-                                            <li><a href="#"><i class="fas fa-headset"></i> Contact Us</a></li>
+                                            <li><a href="#"><i className="fas fa-location-arrow"></i> Our location</a></li>
+                                            <li><a href="#"><i className="fas fa-headset"></i> Contact Us</a></li>
                                         </>
 
                                     }

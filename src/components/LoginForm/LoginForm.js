@@ -142,7 +142,7 @@ function LoginForm() {
             localStorage.setItem("user", JSON.stringify(LoginData[0]))
 
             //If there are Checkout variable stored in Localstorage, naviage to checkout page. If not, navigate to home page
-            if (checkout.length > 0) {
+            if (checkout.length > 0 ) {
                 navigate('/checkout')
             } else {
                 navigate('/home')
@@ -202,7 +202,7 @@ function LoginForm() {
             setAlertColor("error")
             setTextAlert("Please enter your Full Name")
             return false
-        } else if ((isNaN(paramNewCustomer.phone)) || (paramNewCustomer.length < 10)) {
+        } else if ((isNaN(paramNewCustomer.phone)) || (paramNewCustomer.length < 9)) {
             setAlert(true)
             setAlertColor("error")
             setTextAlert("Your Phone Number is invalid! Please try again")
@@ -273,7 +273,7 @@ function LoginForm() {
             for (let i = 0; i < customerData.length; i++) {
                 if (customerData[i].email == userGoogle.email) {
                     localStorage.setItem("user", JSON.stringify(customerData[i]))
-                    if (checkout) {
+                    if (checkout.length > 0) {
                         navigate('/checkout')
                     } else {
                         navigate('/home')
@@ -340,7 +340,7 @@ function LoginForm() {
                                                         <Input placeholder="Email Address*" className="input" value={emailLogin} onChange={onEmailLogin} id="emailLogin"></Input>
                                                     </Row>
                                                     <Row>
-                                                        <Input placeholder="Passwords*" className="input" value={passwordLogin} onChange={onPasswordLogin} id="passwordLogin"></Input>
+                                                        <Input placeholder="Passwords*" className="input" type="password" value={passwordLogin} onChange={onPasswordLogin} id="passwordLogin"></Input>
                                                     </Row>
                                                     <Row>
                                                         <p className="textForgotPassword">Forgot Passwords</p>
@@ -409,7 +409,7 @@ function LoginForm() {
                                                         <Input placeholder="Address*" className="input" onChange={onAddressSignUp}></Input>
                                                     </Row>
                                                     <Row>
-                                                        <Input placeholder="Set A Password*" className="input" onChange={onPasswordSignUp}></Input>
+                                                        <Input placeholder="Set A Password*" className="input" type="password" onChange={onPasswordSignUp}></Input>
                                                     </Row>
                                                     <Row>
                                                         <Button className="loginButtonLarge" onClick={onBtnConfirmSignUpClick}>Get Started</Button>

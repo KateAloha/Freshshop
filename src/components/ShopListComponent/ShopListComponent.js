@@ -3,6 +3,8 @@ import FooterComponent from "../FooterComponent/FooterComponent"
 import HeaderComponent from "../HeaderComponent/HeaderComponent"
 
 function ShopListComponent() {
+
+    
     return (
         <>
             <HeaderComponent></HeaderComponent>

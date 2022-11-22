@@ -13,7 +13,7 @@ function HeaderComponent() {
     const { userGoogle } = useSelector((reduxData) => reduxData.CustomerReducer)
     const user = JSON.parse(localStorage.getItem("user"))
     const allCart = JSON.parse(localStorage.getItem("allCart"))
-    const allCartSpan = allCart.length
+
 
     useEffect(() => {
         onAuthStateChanged(auth, (result) => {
@@ -44,39 +44,23 @@ function HeaderComponent() {
                 <div className="container-fluid">
                     <div className="row">
                         <div className="col-lg-6 col-md-6 col-sm-12 col-xs-12">
-                            <div className="custom-select-box">
-                                <select id="basic" className="selectpicker show-tick form-control" data-placeholder="$ USD">
-                                    <option>¥ JPY</option>
-                                    <option>$ USD</option>
-                                    <option>€ EUR</option>
-                                </select>
-                            </div>
                             <div className="our-link">
                                 <ul>
-                                    {user ?
+                                    {user && user != null ?
                                         <>
-                                            <li>
-                                                <div className="row">
-                                                    <div className="col-sm-2">
-                                                        <div style={{ width: "22px", height: "22px", borderRadius: "100px", backgroundColor: "#993333" }}>
-                                                            <div style={{width: "100%", textAlign: "center", color: "white", fontSize: "15px", fontWeight: "bold", lineHeight: "18px"}}>{user.fullName.charAt(0)}</div>
-                                                        </div>
-                                                    </div>
-                                                    <div className="col-sm-10">
-                                                        <a href="/my-account" >MY ACCOUNT</a>
-                                                    </div>
-                                                </div>
-                                                
-                                            </li>
-                                            <li><a href="/login" onClick={logoutGoogle}> LOG OUT</a></li>
+                                            <li><a href="/my-account"><i className="fa fa-user s_color"></i> {user.fullName.split(" ")[0]}</a></li>
+                                            <li><a href="/login" onClick={logoutGoogle}> Log Out</a></li>
+                                            <li><a href="#"><i class="fas fa-location-arrow"></i> Our location</a></li>
+                                            <li><a href="#"><i class="fas fa-headset"></i> Contact Us</a></li>
                                         </>
                                         :
-                                        <li><a href="/login"><i className="fa fa-user s_color"></i> Login</a></li>
+                                        <>
+                                            <li><a href="/login"><i className="fa fa-user s_color"></i> Login</a></li>
+                                            <li><a href="#"><i class="fas fa-location-arrow"></i> Our location</a></li>
+                                            <li><a href="#"><i class="fas fa-headset"></i> Contact Us</a></li>
+                                        </>
+
                                     }
-
-                                    <li><a href="#"><i className="fas fa-location-arrow"></i> Our location</a></li>
-                                    <li><a href="/contact"><i className="fas fa-headset"></i> Contact Us</a></li>
-
                                 </ul>
                             </div>
                         </div>
@@ -136,7 +120,7 @@ function HeaderComponent() {
                                 <li className="side-menu">
                                     <a href="/cart">
                                         <i className="fa fa-shopping-bag"></i>
-                                        <span className="badge" style={{color: "red"}}> { allCartSpan }</span>
+                                        <span className="badge" style={{ color: "red" }}> {allCart && allCart.length > 0 ? allCart.length : 0}</span>
                                         <p >My Cart </p>
                                     </a>
                                 </li>

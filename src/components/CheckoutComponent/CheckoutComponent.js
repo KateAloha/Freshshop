@@ -8,12 +8,7 @@ import HeaderComponent from "../HeaderComponent/HeaderComponent"
 import { Container, Row } from "reactstrap"
 import { Box } from "@mui/system"
 import ThankyouImg from "../../assets/images/thank-you.jpg"
-import ShoppingCartOutlinedIcon from '@mui/icons-material/ShoppingCartOutlined'
-import LocalShippingOutlinedIcon from '@mui/icons-material/LocalShippingOutlined'
-import CheckCircleOutlineOutlinedIcon from '@mui/icons-material/CheckCircleOutlineOutlined'
-import ForwardOutlinedIcon from '@mui/icons-material/ForwardOutlined';
 import { useDispatch, useSelector } from "react-redux"
-import { getCusData } from "../../actions/CustomerAction"
 
 function CheckoutComponent() {
 
@@ -225,7 +220,7 @@ function CheckoutComponent() {
                     setAlertColor("success")
                     setOpenModal(true)
                     localStorage.setItem('allCart', JSON.stringify([]))
-                    
+                   
 
                 }).catch((error) => {
                     setAlert(true);
@@ -244,6 +239,16 @@ function CheckoutComponent() {
             return false
         }
         return true
+    }
+
+    const onGoHomeClick = () =>{
+        navigate('/')
+        localStorage.setItem('checkout', JSON.stringify([]))
+    }
+
+    const onViewOrderClick = () => {
+        navigate("/order-history")
+        localStorage.setItem('checkout', JSON.stringify([]))
     }
 
     
@@ -435,8 +440,8 @@ function CheckoutComponent() {
                                     <div className="row text-center">
                                         <div className="col-sm-12">
                                             <div >
-                                                <a href="/" className=" btn btn-success hvr-hover" style={{ color: "white", fontWeight: "bold", marginRight: "10px" }}>Go Home</a>
-                                                <a href="/order-history" className=" btn btn-warning hvr-hover" style={{ color: "white", fontWeight: "bold" }}>View Order</a>
+                                                <a  className=" btn btn-success hvr-hover" style={{ color: "white", fontWeight: "bold", marginRight: "10px" }} onClick={onGoHomeClick}>Go Home</a>
+                                                <a  className=" btn btn-warning hvr-hover" style={{ color: "white", fontWeight: "bold" }} onClick={onViewOrderClick}>View Order</a>
                                             </div>
                                         </div>
                                     </div>
